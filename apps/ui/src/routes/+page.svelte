@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { PUBLIC_API_URL } from '$env/static/public';
+	import Keyboard from '../lib/components/Keyboard.svelte';
 	let webSocketEstablished = false;
 	let ws: WebSocket | null = null;
 	let log: string[] = [];
@@ -12,6 +13,7 @@
 		if (webSocketEstablished) return;
 		const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
 		ws = new WebSocket(`${protocol}//localhost:4000/ws`);
+		webSocketEstablished = true;
 
 		ws.addEventListener('open', (event) => {
 			webSocketEstablished = true;
@@ -38,7 +40,7 @@
 	});
 </script>
 
-<div>
+<div class="w-full flex flex-col items-center justify-center">
 	<h1 class="text-3xl font-bold underline">Welcome to SvelteKit</h1>
 	<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
 	<button class="btn btn-primary" onclick={() => ws.send('Testing')}>Click me</button>
@@ -49,6 +51,5 @@
 			establishWebSocket();
 		}}>Click me</button
 	>
-
-	<h2>Pages</h2>
+	<Keyboard />
 </div>
