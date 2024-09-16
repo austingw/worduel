@@ -2,10 +2,13 @@ package main
 
 import (
 	"flag"
+	"fmt"
+	"io"
 	"log"
 	"log/slog"
 	"net/http"
 	"os"
+	"time"
 )
 
 const version = "1.0.0"
@@ -22,7 +25,7 @@ type application struct {
 
 var addr = flag.String("addr", ":8080", "http service address")
 
-func serveHome(w http.ResponseWriter, r *http.Request) {
+func (app *application) serveHome(w http.ResponseWriter, r *http.Request) {
 	log.Println(r.URL)
 	if r.URL.Path != "/" {
 		http.Error(w, "Not found", http.StatusNotFound)
@@ -50,13 +53,29 @@ func main() {
 
 	hub := newHub()
 	go hub.run()
-	http.HandleFunc("/", serveHome)
-	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
-		serveWs(hub, w, r)
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", app.serveHome)
+	mux.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
+		body, err := io.ReadAll(r.Body)
+		if err != nil {
+			logger.Error("Could not read body")
+		}
+		logger.Info(string(body))
+		app.serveWs(hub, w, r)
 	})
 
-	err := http.ListenAndServe(*addr, nil)
-	if err != nil {
-		log.Fatal("ListenAndServe: ", err)
+	srv := &http.Server{
+		Addr:         fmt.Sprintf(":%d", cfg.port),
+		Handler:      mux,
+		IdleTimeout:  time.Minute,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
+		ErrorLog:     slog.NewLogLogger(logger.Handler(), slog.LevelError),
 	}
+
+	logger.Info("starting server", "addr", srv.Addr, "env", cfg.env)
+
+	err := srv.ListenAndServe()
+	logger.Error(err.Error())
+	os.Exit(1)
 }
