@@ -1,12 +1,54 @@
-<script>
+<script lang="ts">
 	import { PUBLIC_API_URL } from '$env/static/public';
-	// const webSocket = new WebSocket(PUBLIC_API_URL + "/ws");
-	console.log(PUBLIC_API_URL);
+	let webSocketEstablished = false;
+	let ws: WebSocket | null = null;
+	let log: string[] = [];
+
+	const logEvent = (str: string) => {
+		log = [...log, str];
+	};
+
+	const establishWebSocket = () => {
+		if (webSocketEstablished) return;
+		const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+		ws = new WebSocket(`${protocol}//localhost:4000/ws`);
+
+		ws.addEventListener('open', (event) => {
+			webSocketEstablished = true;
+			console.log('[websocket] connection open', event);
+			logEvent('[websocket] connection open');
+		});
+		ws.addEventListener('close', (event) => {
+			console.log('[websocket] connection closed', event);
+			logEvent('[websocket] connection closed');
+		});
+		ws.addEventListener('message', (event) => {
+			console.log('[websocket] message received', event);
+			logEvent(`[websocket] message received: ${event.data}`);
+		});
+	};
+
+	$effect(() => {
+		establishWebSocket();
+		return () => {
+			if (ws) {
+				ws.close();
+			}
+		};
+	});
 </script>
 
 <div>
 	<h1 class="text-3xl font-bold underline">Welcome to SvelteKit</h1>
 	<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
-	<button class="btn btn-primary">Click me</button>
+	<button class="btn btn-primary" onclick={() => ws.send('Testing')}>Click me</button>
+	<button
+		class="btn btn-primary"
+		onclick={() => {
+			console.log(window.origin);
+			establishWebSocket();
+		}}>Click me</button
+	>
+
 	<h2>Pages</h2>
 </div>
