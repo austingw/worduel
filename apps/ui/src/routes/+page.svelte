@@ -41,15 +41,7 @@
 </script>
 
 <div class="w-full flex flex-col items-center justify-center">
-	<h1 class="text-3xl font-bold underline">Welcome to SvelteKit</h1>
-	<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+	<h1 class="text-3xl font-bold underline">Worduel</h1>
 	<button class="btn btn-primary" onclick={() => ws.send('Testing')}>Click me</button>
-	<button
-		class="btn btn-primary"
-		onclick={() => {
-			console.log(window.origin);
-			establishWebSocket();
-		}}>Click me</button
-	>
 	<Keyboard />
 </div>
