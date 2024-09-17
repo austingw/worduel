@@ -1,5 +1,11 @@
-<script>
-	let { addLetter, removeLetter, submitAnswer } = $props();
+<script lang="ts">
+	type KeyboardProps = {
+		addLetter: (letter: string) => void;
+		removeLetter: () => void;
+		submitAnswer: () => void;
+	};
+
+	let { addLetter, removeLetter, submitAnswer }: KeyboardProps = $props();
 </script>
 
 <div class="w-full flex flex-col justify-end items-center gap-1">
