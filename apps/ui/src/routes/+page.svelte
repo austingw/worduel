@@ -41,15 +41,8 @@
 	});
 </script>
 
-<div class="w-full flex flex-col items-center justify-center">
+<div class="w-full flex flex-col items-center justify-center gap-8">
 	<h1 class="text-3xl font-bold underline pt-20">🖋️Worduel🤺</h1>
-	<h2 class="text-2xl font-bold underline pt-20">Attempts</h2>
 	<Grid {letters} {attempts} />
-	<ul>
-		{#each attempts as attempt}
-			<li>{attempt}</li>
-		{/each}
-	</ul>
-	<button class="btn btn-primary" onclick={() => ws?.send('Testing')}>Click me</button>
 	<Keyboard {addLetter} {removeLetter} {submitAnswer} />
 </div>
