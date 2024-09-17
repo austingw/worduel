@@ -5,31 +5,29 @@
 	import Keyboard from '$lib/components/Keyboard.svelte';
 	let webSocketEstablished = false;
 	let ws: WebSocket | null = null;
-	let letters: string[] = $state(['', '', '', '', '']);
-	let cursor: number = $state(0);
-	let answer: string = $derived(letters.join(''));
-	let attempts: string[] = $state([]);
+	let letters = $state<string[]>([]);
+	let answer = $derived<string>(letters.join(''));
+	let attempts = $state<string[]>([]);
 
 	function addLetter(letter: string) {
-		letters[cursor] = letter;
-		cursor = Math.min(Math.max(0, cursor + 1), 4);
+		if (letters.length < 5) {
+			letters.push(letter);
+		}
 	}
 
 	function removeLetter(letter: string) {
-		letters[cursor] = '';
-		if (cursor > 0) {
-			cursor = Math.min(Math.max(0, cursor - 1), 4);
+		if (letters.length > 0) {
+			letters.pop();
 		}
 	}
 
 	function submitAnswer() {
-		if (letters.contains('')) {
+		if (answer.length < 5) {
 			return;
 		}
 		ws?.send(answer);
 		attempts.push(answer);
-		letters = ['', '', '', '', ''];
-		cursor = 0;
+		letters = [];
 	}
 
 	$effect(() => {
