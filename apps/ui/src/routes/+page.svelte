@@ -23,13 +23,14 @@
 	}
 
 	function submitAnswer() {
+		if (letters.contains('')) {
+			return;
+		}
 		ws?.send(answer);
 		attempts.push(answer);
 		letters = ['', '', '', '', ''];
 		cursor = 0;
 	}
-
-	console.log('state', letters, cursor, answer, attempts);
 
 	$effect(() => {
 		ws = establishWebSocket(webSocketEstablished);
