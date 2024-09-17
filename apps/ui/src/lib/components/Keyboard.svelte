@@ -12,11 +12,11 @@
 	{/each}
 
 	<div class="flex flex-row justify-center items-center gap-1">
-		<button class="btn btn-neutral" onclick={() => submitAnswer()}>Enter</button>
+		<button class="btn btn-primary" onclick={() => submitAnswer()}>Enter</button>
 		{#each 'zxcvbnm' as letter}
 			<button class="btn btn-neutral" onclick={() => addLetter(letter)}>{letter}</button>
 		{/each}
 
-		<button class="btn btn-neutral" onclick={() => removeLetter()}>← Back</button>
+		<button class="btn btn-secondary" onclick={() => removeLetter()}>← Back</button>
 	</div>
 </div>
