@@ -1,9 +1,16 @@
 <script lang="ts">
-	let { letters, attempts }: { letters: string[]; attempts: string[] } = $props();
+	type GridProps = {
+		letters: string[];
+		attempts: string[];
+		answer: string;
+	};
+
+	let { letters, attempts, answer }: GridProps = $props();
 	let blanks = $derived.by<string[]>(() => {
 		if (letters.length < 5) {
 			return Array(5 - letters.length).fill('');
 		}
+		return [];
 	});
 </script>
 
