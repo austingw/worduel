@@ -6,8 +6,9 @@
 	let webSocketEstablished = false;
 	let ws: WebSocket | null = null;
 	let letters = $state<string[]>([]);
-	let answer = $derived<string>(letters.join(''));
+	let currentAttempt = $derived<string>(letters.join(''));
 	let attempts = $state<string[]>([]);
+	let answer = $state<string>('tares');
 
 	function addLetter(letter: string) {
 		if (letters.length < 5) {
@@ -15,18 +16,18 @@
 		}
 	}
 
-	function removeLetter(letter: string) {
+	function removeLetter() {
 		if (letters.length > 0) {
 			letters.pop();
 		}
 	}
 
 	function submitAnswer() {
-		if (answer.length < 5) {
+		if (currentAttempt.length < 5) {
 			return;
 		}
-		ws?.send(answer);
-		attempts.push(answer);
+		ws?.send(currentAttempt);
+		attempts.push(currentAttempt);
 		letters = [];
 	}
 
@@ -42,6 +43,6 @@
 
 <div class="w-full flex flex-col items-center justify-center gap-8">
 	<h1 class="text-3xl font-bold underline pt-20">🖋️Worduel🤺</h1>
-	<Grid {letters} {attempts} />
+	<Grid {letters} {attempts} {answer} />
 	<Keyboard {addLetter} {removeLetter} {submitAnswer} />
 </div>
