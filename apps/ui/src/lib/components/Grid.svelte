@@ -19,7 +19,7 @@
 		} else if (answer.includes(attemptChar)) {
 			return 'badge-warning';
 		} else {
-			return 'badge-ghost';
+			return 'badge-neutral';
 		}
 	}
 </script>
