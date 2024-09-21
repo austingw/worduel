@@ -1,14 +1,14 @@
 <script lang="ts">
-	import { PUBLIC_API_URL } from '$env/static/public';
 	import establishWebSocket from '$lib/establishWebSocket';
 	import Grid from '$lib/components/Grid.svelte';
 	import Keyboard from '$lib/components/Keyboard.svelte';
 	let webSocketEstablished = false;
-	let ws: WebSocket | null = null;
+	let ws = $state<WebSocket | null>(null);
 	let letters = $state<string[]>([]);
 	let currentAttempt = $derived<string>(letters.join(''));
 	let attempts = $state<string[]>([]);
 	let answer = $state<string>('tares');
+	let name = $state<string>('');
 
 	function addLetter(letter: string) {
 		if (letters.length < 5) {
@@ -43,6 +43,15 @@
 
 <div class="w-full flex flex-col items-center justify-center gap-8">
 	<h1 class="text-3xl font-bold underline pt-20">🖋️Worduel🤺</h1>
+	<input
+		type="text"
+		bind:value={name}
+		placeholder="Enter your name..."
+		class="input input-bordered"
+	/>
+	<button class="btn btn-secondary" onclick={(name.length > 0 && ws?.send(name)) || null}
+		>Confirm</button
+	>
 	<Grid {letters} {attempts} {answer} />
 	<Keyboard {addLetter} {removeLetter} {submitAnswer} />
 </div>
