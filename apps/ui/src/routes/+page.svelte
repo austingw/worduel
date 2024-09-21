@@ -32,9 +32,13 @@
 		letters = [];
 	}
 
+	const naming = {
+		nam: 'austin'
+	};
+
 	function sendName() {
 		if (name.length > 0) {
-			ws?.send(JSON.stringify({ name: name }));
+			ws?.send(JSON.stringify({ type: 'name', content: name }));
 		}
 	}
 
