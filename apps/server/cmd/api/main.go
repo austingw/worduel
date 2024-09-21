@@ -1,14 +1,16 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
-	"io"
-	"log"
 	"log/slog"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/coder/websocket"
+	"github.com/coder/websocket/wsjson"
 )
 
 const version = "1.0.0"
@@ -23,21 +25,6 @@ type application struct {
 	logger *slog.Logger
 }
 
-var addr = flag.String("addr", ":8080", "http service address")
-
-func (app *application) serveHome(w http.ResponseWriter, r *http.Request) {
-	log.Println(r.URL)
-	if r.URL.Path != "/" {
-		http.Error(w, "Not found", http.StatusNotFound)
-		return
-	}
-	if r.Method != http.MethodGet {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
-	http.ServeFile(w, r, "home.html")
-}
-
 func main() {
 	var cfg config
 
@@ -46,22 +33,36 @@ func main() {
 	flag.Parse()
 
 	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
-	app := &application{
-		config: cfg,
-		logger: logger,
-	}
+	// app := &application{
+	// 	config: cfg,
+	// 	logger: logger,
+	// }
 
-	hub := newHub()
-	go hub.run()
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", app.serveHome)
 	mux.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
-		body, err := io.ReadAll(r.Body)
+		c, err := websocket.Accept(w, r, &websocket.AcceptOptions{
+			OriginPatterns: []string{"localhost:5173"},
+		})
 		if err != nil {
-			logger.Error("Could not read body")
+			// ...
 		}
-		logger.Info(string(body))
-		app.serveWs(hub, w, r)
+		defer c.CloseNow()
+
+		// Set the context as needed. Use of r.Context() is not recommended
+		// to avoid surprising behavior (see http.Hijacker).
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+		defer cancel()
+
+		var input struct {
+			Content string `json:"content"`
+			Type    string `json:"type"`
+		}
+		err = wsjson.Read(ctx, c, &input)
+		if err != nil {
+			logger.Error(err.Error())
+		}
+
+		logger.Info(input.Content)
 	})
 
 	srv := &http.Server{
