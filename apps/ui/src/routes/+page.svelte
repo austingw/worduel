@@ -2,6 +2,7 @@
 	import establishWebSocket from '$lib/establishWebSocket';
 	import Grid from '$lib/components/Grid.svelte';
 	import Keyboard from '$lib/components/Keyboard.svelte';
+	import { json } from '@sveltejs/kit';
 	let webSocketEstablished = false;
 	let ws = $state<WebSocket | null>(null);
 	let letters = $state<string[]>([]);
@@ -31,6 +32,12 @@
 		letters = [];
 	}
 
+	function sendName() {
+		if (name.length > 0) {
+			ws?.send(JSON.stringify({ name: name }));
+		}
+	}
+
 	$effect(() => {
 		ws = establishWebSocket(webSocketEstablished);
 		return () => {
@@ -49,9 +56,7 @@
 		placeholder="Enter your name..."
 		class="input input-bordered"
 	/>
-	<button class="btn btn-secondary" onclick={(name.length > 0 && ws?.send(name)) || null}
-		>Confirm</button
-	>
+	<button class="btn btn-secondary" onclick={sendName}>Confirm</button>
 	<Grid {letters} {attempts} {answer} />
 	<Keyboard {addLetter} {removeLetter} {submitAnswer} />
 </div>
