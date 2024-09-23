@@ -27,14 +27,10 @@
 		if (currentAttempt.length < 5) {
 			return;
 		}
-		ws?.send(currentAttempt);
+		ws?.send(JSON.stringify({ type: 'answer', content: currentAttempt }));
 		attempts.push(currentAttempt);
 		letters = [];
 	}
-
-	const naming = {
-		nam: 'austin'
-	};
 
 	function sendName() {
 		if (name.length > 0) {
