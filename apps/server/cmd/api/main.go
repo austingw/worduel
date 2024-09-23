@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"time"
+	"worduel/internal/data"
 
 	"github.com/coder/websocket"
 	"github.com/coder/websocket/wsjson"
@@ -44,7 +45,7 @@ func main() {
 			OriginPatterns: []string{"localhost:5173"},
 		})
 		if err != nil {
-			// ...
+			logger.Error(err.Error())
 		}
 		defer c.CloseNow()
 
@@ -53,16 +54,11 @@ func main() {
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 		defer cancel()
 
-		var input struct {
-			Content string `json:"content"`
-			Type    string `json:"type"`
-		}
+		var input data.Message
 		err = wsjson.Read(ctx, c, &input)
 		if err != nil {
 			logger.Error(err.Error())
 		}
-
-		logger.Info(input.Content)
 	})
 
 	srv := &http.Server{
