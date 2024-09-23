@@ -59,6 +59,11 @@ func main() {
 		if err != nil {
 			logger.Error(err.Error())
 		}
+
+		err = wsjson.Write(ctx, c, input)
+		if err != nil {
+			logger.Error(err.Error())
+		}
 	})
 
 	srv := &http.Server{
