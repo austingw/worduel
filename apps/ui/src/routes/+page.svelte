@@ -2,7 +2,8 @@
 	import establishWebSocket from '$lib/establishWebSocket';
 	import Grid from '$lib/components/Grid.svelte';
 	import Keyboard from '$lib/components/Keyboard.svelte';
-	import { json } from '@sveltejs/kit';
+	import RoomList from '$lib/components/RoomList.svelte';
+
 	let webSocketEstablished = false;
 	let ws = $state<WebSocket | null>(null);
 	let letters = $state<string[]>([]);
@@ -57,6 +58,7 @@
 		class="input input-bordered"
 	/>
 	<button class="btn btn-secondary" onclick={sendName}>Confirm</button>
+	<RoomList />
 	<Grid {letters} {attempts} {answer} />
 	<Keyboard {addLetter} {removeLetter} {submitAnswer} />
 </div>
