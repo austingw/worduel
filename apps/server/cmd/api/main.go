@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"fmt"
 	"log/slog"
@@ -51,18 +52,28 @@ func main() {
 
 		// Set the context as needed. Use of r.Context() is not recommended
 		// to avoid surprising behavior (see http.Hijacker).
-		ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
 
-		var input data.Message
-		err = wsjson.Read(ctx, c, &input)
-		if err != nil {
-			logger.Error(err.Error())
-		}
+		for {
+			var input data.Message
+			err = wsjson.Read(ctx, c, &input)
 
-		err = wsjson.Write(ctx, c, input)
-		if err != nil {
-			logger.Error(err.Error())
+			if errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {
+				return
+			}
+			if websocket.CloseStatus(err) == websocket.StatusNormalClosure ||
+				websocket.CloseStatus(err) == websocket.StatusGoingAway {
+				return
+			}
+			if err != nil {
+				logger.Error(err.Error())
+			}
+
+			err = wsjson.Write(ctx, c, input)
+			if err != nil {
+				logger.Error(err.Error())
+			}
 		}
 	})
 
