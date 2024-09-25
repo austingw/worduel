@@ -1,9 +1,14 @@
+import { env } from '$env/dynamic/public';
+
 export default function establishWebSocket(webSocketEstablished: boolean) {
+const parsedUrl = env.PUBLIC_API_URL.split(":").slice(1).join(":");
+
 	if (webSocketEstablished) {
 		return null;
 	}
 	const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-	const newWs = new WebSocket(`${protocol}//localhost:4000/ws`);
+	const newWs = new WebSocket(`${protocol}${parsedUrl}/ws`);
+
 	webSocketEstablished = true;
 
 	newWs.addEventListener('open', (event) => {
