@@ -20,11 +20,12 @@ const config = {
 			precompress: false,
 			strict: true
 		})
-	},
-
-	compilerOptions: {
-		runes: true
 	}
+
+	// Commenting out in order to use Tanstack Query
+	// compilerOptions: {
+	// 	runes: true
+	// }
 };
 
 export default config;
