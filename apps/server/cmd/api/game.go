@@ -1,4 +1,6 @@
 package main
 
-func (app *application) checkAnswer() {
+import "net/http"
+
+func (app *application) checkAnswer(w http.ResponseWriter, r *http.Request) {
 }
