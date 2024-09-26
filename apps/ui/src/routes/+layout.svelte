@@ -2,9 +2,16 @@
   import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query'
 	import type { Snippet } from 'svelte';
 	import '../app.css';
+	import { browser } from '$app/environment';
 
 	let { children }: { children: Snippet } = $props()
-  const queryClient = new QueryClient()
+  const queryClient = new QueryClient({
+  defaultOptions: {
+      queries: {
+        enabled: browser,
+      },
+    },
+  })
 </script>
 
 
