@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@tanstack/svelte-query':
-    specifier: ^5.56.2
-    version: 5.56.2(svelte@5.0.0-next.246)
+    specifier: https://pkg.pr.new/@tanstack/svelte-query@ccce0b8
+    version: '@pkg.pr.new/@tanstack/svelte-query@ccce0b8(svelte@5.0.0-next.246)'
 
 devDependencies:
   '@playwright/test':
@@ -651,19 +651,6 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
-
-  /@tanstack/query-core@5.56.2:
-    resolution: {integrity: sha512-gor0RI3/R5rVV3gXfddh1MM+hgl0Z4G7tj6Xxpq6p2I03NGPaJ8dITY9Gz05zYYb/EJq9vPas/T4wn9EaDPd4Q==}
-    dev: false
-
-  /@tanstack/svelte-query@5.56.2(svelte@5.0.0-next.246):
-    resolution: {integrity: sha512-3oPvqr9y+WAryqWLgp2Vam/vZAJ1uS7nIxZd4SJeS5A3XolKC/8L2eDmLTSPFmRwu1W95uweWe907e1eoAJZiQ==}
-    peerDependencies:
-      svelte: ^3.54.0 || ^4.0.0 || ^5.0.0-next.0
-    dependencies:
-      '@tanstack/query-core': 5.56.2
-      svelte: 5.0.0-next.246
-    dev: false
 
   /@types/cookie@0.6.0:
     resolution: {integrity: sha512-4Kh9a6B2bQciAhf7FSuMRRkUWecJgJu9nPnx3yzpsfXX/c50REIqpHY4C82bXP90qrLtXtkDxTZosYO3UpOwlA==}
@@ -2652,3 +2639,21 @@ packages:
 
   /zimmerframe@1.1.2:
     resolution: {integrity: sha512-rAbqEGa8ovJy4pyBxZM70hg4pE6gDgaQ0Sl9M3enG3I0d6H4XSAM3GeNGLKnsBpuijUow064sf7ww1nutC5/3w==}
+
+  '@pkg.pr.new/@tanstack/svelte-query@ccce0b8(svelte@5.0.0-next.246)':
+    resolution: {tarball: https://pkg.pr.new/@tanstack/svelte-query@ccce0b8}
+    id: '@pkg.pr.new/@tanstack/svelte-query@ccce0b8'
+    name: '@tanstack/svelte-query'
+    version: 5.56.2
+    peerDependencies:
+      svelte: ^5.0.0-next.259
+    dependencies:
+      '@tanstack/query-core': '@pkg.pr.new/TanStack/query/@tanstack/query-core@ccce0b8'
+      svelte: 5.0.0-next.246
+    dev: false
+
+  '@pkg.pr.new/TanStack/query/@tanstack/query-core@ccce0b8':
+    resolution: {tarball: https://pkg.pr.new/TanStack/query/@tanstack/query-core@ccce0b8}
+    name: '@tanstack/query-core'
+    version: 5.56.2
+    dev: false
