@@ -35,5 +35,3 @@
 		</table>
 	{/if}
 </div>
-
-<h3>{query.data?.hello}</h3>
