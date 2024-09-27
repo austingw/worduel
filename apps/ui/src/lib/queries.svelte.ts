@@ -1,7 +1,7 @@
 import { env } from "$env/dynamic/public";
 import { createQuery } from "@tanstack/svelte-query";
 
-export function getRooms() {
+export const getRooms = () => {
 return createQuery(() => ({
 		queryKey: ['rooms'],
 		queryFn: async () => {
