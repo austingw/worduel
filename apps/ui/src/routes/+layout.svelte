@@ -16,7 +16,7 @@
 
 
 <QueryClientProvider client={queryClient}>
-<div class="w-full flex flex-col items-center justify-center">
-	{@render children()}
-</div>
+  <div class="w-full flex flex-col items-center justify-center">
+    {@render children()}
+  </div>
 </QueryClientProvider>
