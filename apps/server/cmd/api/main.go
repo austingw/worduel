@@ -6,7 +6,10 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+	"sync"
 	"time"
+
+	"github.com/coder/websocket"
 )
 
 const version = "1.0.0"
@@ -16,9 +19,22 @@ type config struct {
 	env  string
 }
 
+type User struct {
+	Name  string
+	Ws    *websocket.Conn
+	Score int
+}
+
+type Room struct {
+	Name  string    `json:"name"`
+	Users [2]string `json:"users"`
+}
+
 type application struct {
 	config config
 	logger *slog.Logger
+	rooms  map[string]Room
+	mu     sync.RWMutex
 }
 
 func main() {
@@ -33,6 +49,8 @@ func main() {
 	app := &application{
 		config: cfg,
 		logger: logger,
+		rooms:  make(map[string]Room),
+		mu:     sync.RWMutex{},
 	}
 
 	srv := &http.Server{
