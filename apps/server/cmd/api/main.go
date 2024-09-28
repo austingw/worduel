@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/coder/websocket"
+	"github.com/rs/cors"
 )
 
 const version = "1.0.0"
@@ -53,9 +54,11 @@ func main() {
 		mu:     sync.RWMutex{},
 	}
 
+	handler := cors.Default().Handler(app.routes())
+
 	srv := &http.Server{
 		Addr:         fmt.Sprintf(":%d", cfg.port),
-		Handler:      app.routes(),
+		Handler:      handler,
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
