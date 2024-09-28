@@ -26,8 +26,8 @@ type User struct {
 }
 
 type Room struct {
-	Name  string    `json:"name"`
-	Users [2]string `json:"users"`
+	Name  string  `json:"name"`
+	Users [2]User `json:"users"`
 }
 
 type application struct {
