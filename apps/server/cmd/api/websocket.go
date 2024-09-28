@@ -5,11 +5,15 @@ import (
 	"errors"
 	"net/http"
 	"time"
-	"worduel/internal/data"
 
 	"github.com/coder/websocket"
 	"github.com/coder/websocket/wsjson"
 )
+
+type Message struct {
+	Content string `json:"content"`
+	Type    string `json:"type"`
+}
 
 func (app *application) websocketHandler(w http.ResponseWriter, r *http.Request) {
 	c, err := websocket.Accept(w, r, &websocket.AcceptOptions{
@@ -26,7 +30,7 @@ func (app *application) websocketHandler(w http.ResponseWriter, r *http.Request)
 	defer cancel()
 
 	for {
-		var input data.Message
+		var input Message
 		err = wsjson.Read(ctx, c, &input)
 
 		if errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {
