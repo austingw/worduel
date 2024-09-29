@@ -22,7 +22,7 @@ type config struct {
 
 type User struct {
 	Name  string          `json:"name"`
-	Ws    *websocket.Conn `json:"ws"`
+	Ws    *websocket.Conn `json:"-"`
 	Score int             `json:"score"`
 }
 
