@@ -32,7 +32,7 @@
 		{/each}
 
 		<button
-			class="btn btn-circle text-lg btn-primary btn-sm sm:btn-md"
+			class="btn btn-circle text-lg btn-accent btn-sm sm:btn-md"
 			onclick={() => removeLetter()}
 			>←
 		</button>
