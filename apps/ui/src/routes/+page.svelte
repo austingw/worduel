@@ -3,6 +3,7 @@
 	import Grid from '$lib/components/Grid.svelte';
 	import Keyboard from '$lib/components/Keyboard.svelte';
 	import RoomList from '$lib/components/RoomList.svelte';
+	import { createRoom } from '$lib/mutations.svelte';
 
 	let webSocketEstablished = false;
 	let ws = $state<WebSocket | null>(null);
@@ -11,6 +12,8 @@
 	let attempts = $state<string[]>([]);
 	let answer = $state<string>('tares');
 	let name = $state<string>('');
+
+	const create = createRoom();
 
 	function addLetter(letter: string) {
 		if (letters.length < 5) {
@@ -33,12 +36,6 @@
 		letters = [];
 	}
 
-	function sendName() {
-		if (name.length > 0) {
-			ws?.send(JSON.stringify({ type: 'name', content: name }));
-		}
-	}
-
 	$effect(() => {
 		ws = establishWebSocket(webSocketEstablished);
 		return () => {
@@ -57,7 +54,11 @@
 		placeholder="Enter your name..."
 		class="input input-bordered"
 	/>
-	<button class="btn btn-secondary" onclick={sendName}>Confirm</button>
+	<button
+		class="btn btn-secondary"
+		onclick={async () => create.mutateAsync('jeremy').then((res) => console.log(res))}
+		>Confirm</button
+	>
 	<RoomList />
 	<Grid {letters} {attempts} {answer} />
 	<Keyboard {addLetter} {removeLetter} {submitAnswer} />
