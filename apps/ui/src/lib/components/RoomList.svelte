@@ -7,7 +7,7 @@
 <div class="flex flex-col items-center justify-center">
 	{#if query.isLoading}
 		<span class="loading loading-spinner loading-lg text-secondary"></span>
-	{:else if query.data}
+	{:else if query?.data}
 		<table class="table table-zebra">
 			<thead>
 				<tr>
@@ -18,15 +18,20 @@
 				</tr>
 			</thead>
 			<tbody>
-				{#each query.data.rooms as room, index}
+				{#each query.data as room, index}
 					<tr>
 						<td>{index + 1}</td>
 						<td>{room.name}</td>
-						<td>{room.players.length}</td>
+						<td>1 / 2</td>
 						<td>
 							<button
-								class={`btn btn-secondary ${room.players.length > 1 && 'btn-disabled'}`}
-								onclick={() => console.log('joins room')}>Join</button
+								class={`btn btn-accent btn-xs ${
+									room?.users[0]?.name !== '' && room?.users[1]?.name !== '' && 'btn-disabled'
+								}`}
+								onclick={() => console.log('joins room')}
+								>{room?.users[0]?.name !== '' && room?.users[1]?.name !== ''
+									? 'Full'
+									: 'Join'}</button
 							>
 						</td>
 					</tr>
