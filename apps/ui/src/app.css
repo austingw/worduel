@@ -2,6 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-.btn {
-  @apply rounded-full;
-}
+/* .btn { */
+/*   @apply rounded-full; */
+/* } */
