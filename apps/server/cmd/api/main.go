@@ -21,9 +21,9 @@ type config struct {
 }
 
 type User struct {
-	Name  string
-	Ws    *websocket.Conn
-	Score int
+	Name  string          `json:"name"`
+	Ws    *websocket.Conn `json:"ws"`
+	Score int             `json:"score"`
 }
 
 type Room struct {
