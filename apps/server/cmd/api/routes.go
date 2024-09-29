@@ -9,7 +9,6 @@ func (app *application) routes() *http.ServeMux {
 
 	mux.HandleFunc("GET /rooms", app.listRoomsHandler)
 	mux.HandleFunc("POST /rooms", app.createRoomHandler)
-	mux.HandleFunc("PUT /rooms", app.joinRoomHandler)
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {})
 
 	return mux

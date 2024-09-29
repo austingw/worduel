@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"net/http"
 )
 
@@ -32,42 +33,6 @@ func (app *application) createRoomHandler(w http.ResponseWriter, r *http.Request
 	}
 }
 
-func (app *application) joinRoomHandler(w http.ResponseWriter, r *http.Request) {
-	app.mu.Lock()
-	defer app.mu.Unlock()
-
-	var input struct {
-		Name string `json:"name"`
-		User User   `json:"user"`
-	}
-
-	err := app.readJSON(w, r, &input)
-	if err != nil {
-		app.logger.Error(err.Error())
-		http.Error(w, "The server encountered a problem and could not process your request", http.StatusBadRequest)
-		return
-	}
-
-	room, ok := app.rooms[input.Name]
-	if !ok {
-		app.logger.Error(err.Error())
-		http.Error(w, "Room not found", http.StatusNotFound)
-		return
-	}
-
-	if room.Users[0].Name == "" {
-		room.Users[0] = input.User
-	} else if room.Users[1].Name == "" {
-		room.Users[1] = input.User
-	} else {
-		http.Error(w, "Room is full", http.StatusConflict)
-		return
-	}
-
-	app.rooms[input.Name] = room
-	w.WriteHeader(http.StatusOK)
-}
-
 func (app *application) listRoomsHandler(w http.ResponseWriter, r *http.Request) {
 	err := app.writeJSON(w, http.StatusOK, envelope{"rooms": app.rooms}, nil)
 	if err != nil {
@@ -75,4 +40,25 @@ func (app *application) listRoomsHandler(w http.ResponseWriter, r *http.Request)
 		http.Error(w, "The server encountered a problem and could not process your request", http.StatusInternalServerError)
 		return
 	}
+}
+
+func (app *application) joinRoom(name string, user User) error {
+	app.mu.Lock()
+	defer app.mu.Unlock()
+
+	room, ok := app.rooms[name]
+	if !ok {
+		return errors.New("Room does not exist")
+	}
+
+	if room.Users[0].Name == "" {
+		room.Users[0] = user
+	} else if room.Users[1].Name == "" {
+		room.Users[1] = user
+	} else {
+		return errors.New("Room is full")
+	}
+
+	app.rooms[name] = room
+	return nil
 }
