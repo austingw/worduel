@@ -9,8 +9,9 @@ return createQuery(() => ({
 			if (!response.ok) {
 				throw new Error('Failed to fetch rooms');
 			}
-			return await response.json();
+			const data = await response.json();
+      return Object.values(data.rooms)
 		}
 	}));
-
 }
+
