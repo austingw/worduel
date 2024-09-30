@@ -42,13 +42,13 @@ func (app *application) listRoomsHandler(w http.ResponseWriter, r *http.Request)
 	}
 }
 
-func (app *application) joinRoom(name string, user User) error {
+func (app *application) joinRoom(name string, user User) (string, error) {
 	app.mu.Lock()
 	defer app.mu.Unlock()
 
 	room, ok := app.rooms[name]
 	if !ok {
-		return errors.New("Room does not exist")
+		return "", errors.New("Room does not exist")
 	}
 
 	if room.Users[0].Name == "" {
@@ -56,9 +56,9 @@ func (app *application) joinRoom(name string, user User) error {
 	} else if room.Users[1].Name == "" {
 		room.Users[1] = user
 	} else {
-		return errors.New("Room is full")
+		return "", errors.New("Room is full")
 	}
 
 	app.rooms[name] = room
-	return nil
+	return "Successfully joined room:" + name, nil
 }
