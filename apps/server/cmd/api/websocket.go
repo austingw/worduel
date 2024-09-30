@@ -13,6 +13,7 @@ import (
 type Message struct {
 	Content string `json:"content"`
 	Type    string `json:"type"`
+	User    User   `json:"user"`
 }
 
 func (app *application) websocketHandler(w http.ResponseWriter, r *http.Request) {
@@ -32,6 +33,7 @@ func (app *application) websocketHandler(w http.ResponseWriter, r *http.Request)
 	for {
 		var input Message
 		err = wsjson.Read(ctx, c, &input)
+		input.User.Ws = c
 
 		if errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {
 			return
@@ -44,9 +46,29 @@ func (app *application) websocketHandler(w http.ResponseWriter, r *http.Request)
 			app.logger.Error(err.Error())
 		}
 
-		err = wsjson.Write(ctx, c, input)
-		if err != nil {
-			app.logger.Error(err.Error())
+		switch {
+		case input.Type == "join":
+			{
+				msg, err := app.joinRoom(input.Content, input.User)
+				if err != nil {
+					app.logger.Error(err.Error())
+				}
+				err = wsjson.Write(ctx, c, envelope{"message": msg})
+				if err != nil {
+					app.logger.Error(err.Error())
+				}
+			}
+		case input.Type == "attempt":
+			{
+			}
+		case input.Type == "leave":
+			{
+			}
 		}
+
+		// err = wsjson.Write(ctx, c, input)
+		// if err != nil {
+		// 	app.logger.Error(err.Error())
+		// }
 	}
 }
