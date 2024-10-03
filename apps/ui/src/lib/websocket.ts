@@ -1,7 +1,7 @@
 import { env } from '$env/dynamic/public';
 
-export default function establishWebSocket(webSocketEstablished: boolean) {
-const parsedUrl = env.PUBLIC_API_URL.split(":").slice(1).join(":");
+export function establishWebSocket(webSocketEstablished: boolean) {
+	const parsedUrl = env.PUBLIC_API_URL.split(':').slice(1).join(':');
 
 	if (webSocketEstablished) {
 		return null;
@@ -22,4 +22,16 @@ const parsedUrl = env.PUBLIC_API_URL.split(":").slice(1).join(":");
 		console.log('[websocket] message received', event);
 	});
 	return newWs;
+}
+
+export function sendJoin({ ws, room, user }: { ws: WebSocket; room: string; user: string }) {
+	ws.send(JSON.stringify({ type: 'join', content: room, user }));
+}
+
+export function sendAnswer({ ws, answer, user }: { ws: WebSocket; answer: string; user: string }) {
+	ws.send(JSON.stringify({ type: 'attend', content: answer, user }));
+}
+
+export function sendLeave({ ws, user }: { ws: WebSocket; user: string }) {
+	ws.send(JSON.stringify({ type: 'leave', user }));
 }
