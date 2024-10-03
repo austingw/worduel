@@ -1,5 +1,5 @@
 <script lang="ts">
-	import establishWebSocket from '$lib/establishWebSocket';
+	import { establishWebSocket } from '$lib/websocket';
 	import Grid from '$lib/components/Grid.svelte';
 	import Keyboard from '$lib/components/Keyboard.svelte';
 	import RoomList from '$lib/components/RoomList.svelte';
@@ -12,6 +12,10 @@
 	let attempts = $state<string[]>([]);
 	let answer = $state<string>('tares');
 	let name = $state<string>('');
+
+	export function getName() {
+		return name;
+	}
 
 	const create = createRoom();
 
@@ -31,7 +35,16 @@
 		if (currentAttempt.length < 5) {
 			return;
 		}
-		ws?.send(JSON.stringify({ type: 'answer', content: currentAttempt }));
+		ws?.send(
+			JSON.stringify({
+				type: 'join',
+				content: 'fef',
+				user: {
+					name: 'jeff',
+					score: 1
+				}
+			})
+		);
 		attempts.push(currentAttempt);
 		letters = [];
 	}
@@ -56,7 +69,7 @@
 	/>
 	<button
 		class="btn btn-secondary"
-		onclick={async () => create.mutateAsync('jeremy').then((res) => console.log(res))}
+		onclick={async () => create.mutateAsync(getName()).then((res) => console.log(res))}
 		>Confirm</button
 	>
 	<RoomList />

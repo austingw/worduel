@@ -1,8 +1,8 @@
-import { env } from "$env/dynamic/public";
-import { createQuery } from "@tanstack/svelte-query";
+import { env } from '$env/dynamic/public';
+import { createQuery } from '@tanstack/svelte-query';
 
 export const getRooms = () => {
-return createQuery(() => ({
+	return createQuery(() => ({
 		queryKey: ['rooms'],
 		queryFn: async () => {
 			const response = await fetch(`${env.PUBLIC_API_URL}/rooms`);
@@ -10,8 +10,8 @@ return createQuery(() => ({
 				throw new Error('Failed to fetch rooms');
 			}
 			const data = await response.json();
-      return Object.values(data.rooms)
+			console.log(data.rooms);
+			return Object.values(data.rooms);
 		}
 	}));
-}
-
+};
