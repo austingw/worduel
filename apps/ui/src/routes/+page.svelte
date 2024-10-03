@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { establishWebSocket, wsMessages } from '$lib/websocket.svelte';
+	import { establishWebSocket, getMessages } from '$lib/websocket.svelte';
 	import Grid from '$lib/components/Grid.svelte';
 	import Keyboard from '$lib/components/Keyboard.svelte';
 	import RoomList from '$lib/components/RoomList.svelte';
@@ -61,7 +61,7 @@
 
 <div class="w-full flex flex-col items-center justify-center gap-8">
 	<h1 class="text-3xl font-bold underline pt-20">🖋️Worduel🤺</h1>
-	<h2>{wsMessages}</h2>
+	<h2>{getMessages()}</h2>
 	<input
 		type="text"
 		bind:value={name}

@@ -1,6 +1,6 @@
 import { env } from '$env/dynamic/public';
 
-export let wsMessages = $state<string[]>([]);
+let wsMessages = $state<string[]>(['test']);
 
 export function establishWebSocket(webSocketEstablished: boolean) {
 	const parsedUrl = env.PUBLIC_API_URL.split(':').slice(1).join(':');
@@ -23,7 +23,8 @@ export function establishWebSocket(webSocketEstablished: boolean) {
 	});
 	newWs.addEventListener('message', (message) => {
 		const data: Request = JSON.parse(message.data);
-		wsMessages.push(String(data));
+		wsMessages = [...wsMessages, data.message];
+		console.log('[websocket] message', data.message, wsMessages);
 	});
 	return newWs;
 }
@@ -38,4 +39,8 @@ export function sendAnswer({ ws, answer, user }: { ws: WebSocket; answer: string
 
 export function sendLeave(ws: WebSocket) {
 	ws.send(JSON.stringify({ type: 'leave' }));
+}
+
+export function getMessages() {
+	return wsMessages;
 }
