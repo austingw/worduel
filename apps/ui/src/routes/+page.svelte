@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { establishWebSocket, getMessages } from '$lib/websocket.svelte';
 	import Grid from '$lib/components/Grid.svelte';
+	import History from '$lib/components/History.svelte';
 	import Keyboard from '$lib/components/Keyboard.svelte';
 	import RoomList from '$lib/components/RoomList.svelte';
 	import { createRoom } from '$lib/mutations.svelte';
@@ -76,4 +77,5 @@
 	<RoomList />
 	<Grid {letters} {attempts} {answer} />
 	<Keyboard {addLetter} {removeLetter} {submitAnswer} />
+	<History />
 </div>
