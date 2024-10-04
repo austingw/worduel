@@ -21,10 +21,9 @@ export function establishWebSocket(webSocketEstablished: boolean) {
 		sendLeave(newWs);
 		wsMessages = [];
 	});
-	newWs.addEventListener('message', (message) => {
-		const data: Request = JSON.parse(message.data);
+	newWs.addEventListener('message', (message: MessageEvent) => {
+		const data: { message: string } = JSON.parse(message.data);
 		wsMessages = [...wsMessages, data.message];
-		console.log('[websocket] message', data.message, wsMessages);
 	});
 	return newWs;
 }
