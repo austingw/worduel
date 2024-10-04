@@ -23,7 +23,7 @@ export function establishWebSocket(webSocketEstablished: boolean) {
 	});
 	newWs.addEventListener('message', (message: MessageEvent) => {
 		const data: { message: string } = JSON.parse(message.data);
-		wsMessages = [...wsMessages, data.message];
+		wsMessages = [data.message, ...wsMessages];
 	});
 	return newWs;
 }
