@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { establishWebSocket, getMessages, getShowNotification } from '$lib/websocket.svelte';
+	import { establishWebSocket } from '$lib/websocket.svelte';
 	import Grid from '$lib/components/Grid.svelte';
-	import History from '$lib/components/History.svelte';
+	import Notifications from '$lib/components/Notifications.svelte';
 	import Keyboard from '$lib/components/Keyboard.svelte';
 	import RoomList from '$lib/components/RoomList.svelte';
 	import { createRoom } from '$lib/mutations.svelte';
@@ -62,7 +62,6 @@
 
 <div class="w-full flex flex-col items-center justify-center gap-8">
 	<h1 class="text-3xl font-bold underline pt-20">🖋️Worduel🤺</h1>
-	<h2>{getMessages()}</h2>
 	<input
 		type="text"
 		bind:value={name}
@@ -77,10 +76,5 @@
 	<RoomList />
 	<Grid {letters} {attempts} {answer} />
 	<Keyboard {addLetter} {removeLetter} {submitAnswer} />
-	<History />
-	{#if getShowNotification()}
-		<div role="alert" class="alert absolute bottom-4 w-20 animate-bounce">
-			<span>f</span>
-		</div>
-	{/if}
+	<Notifications />
 </div>
