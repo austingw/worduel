@@ -1,6 +1,8 @@
 import { env } from '$env/dynamic/public';
 
 let wsMessages = $state<string[]>(['test']);
+let showNotification = $state(false);
+let notification = $derived<string>(wsMessages[0]);
 
 export function establishWebSocket(webSocketEstablished: boolean) {
 	const parsedUrl = env.PUBLIC_API_URL.split(':').slice(1).join(':');
@@ -24,6 +26,10 @@ export function establishWebSocket(webSocketEstablished: boolean) {
 	newWs.addEventListener('message', (message: MessageEvent) => {
 		const data: { message: string } = JSON.parse(message.data);
 		wsMessages = [data.message, ...wsMessages];
+		showNotification = true;
+		setTimeout(() => {
+			showNotification = false;
+		}, 5000);
 	});
 	return newWs;
 }
@@ -42,4 +48,12 @@ export function sendLeave(ws: WebSocket) {
 
 export function getMessages() {
 	return wsMessages;
+}
+
+export function getNotification() {
+	return notification;
+}
+
+export function getShowNotification() {
+	return showNotification;
 }
