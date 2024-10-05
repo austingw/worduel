@@ -25,6 +25,9 @@ export function establishWebSocket(webSocketEstablished: boolean) {
 	});
 	newWs.addEventListener('message', (message: MessageEvent) => {
 		const data: { message: string } = JSON.parse(message.data);
+		if (data.message === '' || data.message === undefined) {
+			return;
+		}
 		wsMessages = [data.message, ...wsMessages];
 		showNotification = true;
 		setTimeout(() => {
