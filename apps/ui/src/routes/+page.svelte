@@ -4,8 +4,8 @@
 	import Notifications from '$lib/components/Notifications.svelte';
 	import Keyboard from '$lib/components/Keyboard.svelte';
 	import RoomList from '$lib/components/RoomList.svelte';
-	import StartScreen from '$lib/components/StartScreen.svelte';
-	import type { Screen } from '$lib/types';
+	import Start from '$lib/components/Start.svelte';
+	import type { View } from '$lib/types';
 	import { createRoom } from '$lib/mutations.svelte';
 
 	let webSocketEstablished = false;
@@ -15,10 +15,10 @@
 	let attempts = $state<string[]>([]);
 	let answer = $state<string>('tares');
 	let name = $state<string>('');
-	let screen = $state<Screen>('start');
+	let view = $state<View>('start');
 
-	function changeScreen(newScreen: Screen) {
-		screen = newScreen;
+	function changeView(newView: View) {
+		view = newView;
 	}
 
 	export function getName() {
@@ -68,7 +68,7 @@
 </script>
 
 <div class="w-full flex flex-col items-center justify-center gap-8">
-	<StartScreen {name} {changeScreen} />
+	<Start {name} {changeView} />
 	<RoomList />
 
 	<button

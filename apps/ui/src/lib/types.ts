@@ -1,1 +1,1 @@
-export type Screen = 'start' | 'list' | 'room';
+export type View = 'start' | 'list' | 'room';
