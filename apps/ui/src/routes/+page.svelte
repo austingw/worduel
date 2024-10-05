@@ -68,15 +68,18 @@
 </script>
 
 <div class="w-full flex flex-col items-center justify-center gap-8">
-	<Start {name} {changeView} />
-	<RoomList />
-
-	<button
-		class="btn btn-secondary"
-		onclick={async () => create.mutateAsync(getName()).then((res) => console.log(res))}
-		>Confirm</button
-	>
-	<Grid {letters} {attempts} {answer} />
-	<Keyboard {addLetter} {removeLetter} {submitAnswer} />
-	<Notifications />
+	{#if view === 'start'}
+		<Start {name} {changeView} />
+	{:else if view === 'list'}
+		<RoomList />
+		<button
+			class="btn btn-secondary"
+			onclick={async () => create.mutateAsync(getName()).then((res) => console.log(res))}
+			>Confirm</button
+		>
+	{:else if view === 'room'}
+		<Grid {letters} {attempts} {answer} />
+		<Keyboard {addLetter} {removeLetter} {submitAnswer} />
+		<Notifications />
+	{/if}
 </div>
