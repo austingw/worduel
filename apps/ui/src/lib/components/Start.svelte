@@ -1,12 +1,12 @@
 <script lang="ts">
-	import type { Screen } from '$lib/types';
+	import type { View } from '$lib/types';
 
-	type StartScreenProps = {
+	type StartProps = {
 		name: string;
-		changeScreen: (newScreen: Screen) => void;
+		changeView: (newView: View) => void;
 	};
 
-	let { name, changeScreen }: StartScreenProps = $props();
+	let { name, changeView }: StartProps = $props();
 </script>
 
 <div class="flex flex-row items-center justify-between">
@@ -19,7 +19,7 @@
 	<button
 		class="btn btn-secondary"
 		onclick={() => {
-			changeScreen('list');
+			changeView('list');
 		}}>Confirm</button
 	>
 </div>
