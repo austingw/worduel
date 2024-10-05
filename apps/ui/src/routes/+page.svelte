@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { establishWebSocket, getMessages } from '$lib/websocket.svelte';
+	import { establishWebSocket, getMessages, getShowNotification } from '$lib/websocket.svelte';
 	import Grid from '$lib/components/Grid.svelte';
 	import History from '$lib/components/History.svelte';
 	import Keyboard from '$lib/components/Keyboard.svelte';
@@ -78,4 +78,9 @@
 	<Grid {letters} {attempts} {answer} />
 	<Keyboard {addLetter} {removeLetter} {submitAnswer} />
 	<History />
+	{#if getShowNotification()}
+		<div role="alert" class="alert absolute bottom-4 w-20 animate-bounce">
+			<span>f</span>
+		</div>
+	{/if}
 </div>
