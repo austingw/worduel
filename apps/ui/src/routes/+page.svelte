@@ -4,6 +4,8 @@
 	import Notifications from '$lib/components/Notifications.svelte';
 	import Keyboard from '$lib/components/Keyboard.svelte';
 	import RoomList from '$lib/components/RoomList.svelte';
+	import StartScreen from '$lib/components/StartScreen.svelte';
+	import type { Screen } from '$lib/types';
 	import { createRoom } from '$lib/mutations.svelte';
 
 	let webSocketEstablished = false;
@@ -13,6 +15,11 @@
 	let attempts = $state<string[]>([]);
 	let answer = $state<string>('tares');
 	let name = $state<string>('');
+	let screen = $state<Screen>('start');
+
+	function changeScreen(newScreen: Screen) {
+		screen = newScreen;
+	}
 
 	export function getName() {
 		return name;
@@ -61,19 +68,14 @@
 </script>
 
 <div class="w-full flex flex-col items-center justify-center gap-8">
-	<h1 class="text-3xl font-bold underline pt-20">🖋️Worduel🤺</h1>
-	<input
-		type="text"
-		bind:value={name}
-		placeholder="Enter your name..."
-		class="input input-bordered"
-	/>
+	<StartScreen {name} {changeScreen} />
+	<RoomList />
+
 	<button
 		class="btn btn-secondary"
 		onclick={async () => create.mutateAsync(getName()).then((res) => console.log(res))}
 		>Confirm</button
 	>
-	<RoomList />
 	<Grid {letters} {attempts} {answer} />
 	<Keyboard {addLetter} {removeLetter} {submitAnswer} />
 	<Notifications />
