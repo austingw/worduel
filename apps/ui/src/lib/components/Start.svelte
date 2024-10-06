@@ -9,17 +9,19 @@
 	let { name, changeView }: StartProps = $props();
 </script>
 
-<div class="flex flex-row items-center justify-between">
-	<input
-		type="text"
-		bind:value={name}
-		placeholder="Enter your name..."
-		class="input input-bordered"
-	/>
-	<button
-		class="btn btn-secondary"
-		onclick={() => {
-			changeView('list');
-		}}>Confirm</button
-	>
+<div class="flex flex-col h-full items-center justify-start gap-4">
+	<p>Welcome! Please enter a name to get started:</p>
+	<div class="flex flex-row items-center justify-center gap-4">
+		<input type="text" bind:value={name} placeholder="Enter name..." class="input input-bordered" />
+		<button
+			class="btn btn-secondary"
+			onclick={() => {
+				if (name === '') {
+					alert('Please enter your name');
+					return;
+				}
+				changeView('list');
+			}}>Confirm</button
+		>
+	</div>
 </div>
