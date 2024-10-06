@@ -11,20 +11,22 @@
 		view = newView;
 	}
 
-	export function getName() {
-		return name;
+	function inputName(newName: string) {
+		name = newName;
 	}
 </script>
 
 <div class="w-full h-full flex flex-col items-center justify-start gap-8 pt-12">
 	<article class="prose text-center">
-		<h1 class="underline">Worduel</h1>
+		<h1 class="underline">Worduel {name}</h1>
 	</article>
+
 	{#if view === 'start'}
-		<Start {name} {changeView} />
+		<Start {inputName} {changeView} />
 	{:else if view === 'list'}
-		<RoomList {getName} />
+		<RoomList {name} />
 	{:else if view === 'room'}
 		<Room />
 	{/if}
+	<button class="btn btn-secondary" onclick={() => console.log(name)}>Jm</button>
 </div>

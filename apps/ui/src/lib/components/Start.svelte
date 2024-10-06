@@ -2,24 +2,31 @@
 	import type { View } from '$lib/types';
 
 	type StartProps = {
-		name: string;
+		inputName: (name: string) => void;
 		changeView: (newView: View) => void;
 	};
 
-	let { name, changeView }: StartProps = $props();
+	let { inputName, changeView }: StartProps = $props();
+	let newName = $state<string>('');
 </script>
 
 <div class="flex flex-col h-full items-center justify-start gap-4">
 	<p>Welcome! Please enter a name to get started:</p>
 	<div class="flex flex-row items-center justify-center gap-4">
-		<input type="text" bind:value={name} placeholder="Enter name..." class="input input-bordered" />
+		<input
+			type="text"
+			bind:value={newName}
+			placeholder="Enter name..."
+			class="input input-bordered"
+		/>
 		<button
 			class="btn btn-secondary"
 			onclick={() => {
-				if (name === '') {
+				if (newName === '') {
 					alert('Please enter your name');
 					return;
 				}
+				inputName(newName);
 				changeView('list');
 			}}>Confirm</button
 		>
