@@ -1,10 +1,23 @@
 <script lang="ts">
+	import { createRoom } from '$lib/mutations.svelte';
 	import { getRooms } from '$lib/queries.svelte';
 
+	type RoomListProps = {
+		getName: () => string;
+	};
+
+	let { getName }: RoomListProps = $props();
+
+	const create = createRoom();
 	const query = getRooms();
 </script>
 
 <div class="flex flex-col items-center justify-center">
+	<button
+		class="btn btn-secondary"
+		onclick={async () => create.mutateAsync(getName()).then((res) => console.log(res))}
+		>Create Room</button
+	>
 	{#if query.isLoading}
 		<span class="loading loading-spinner loading-lg text-secondary"></span>
 	{:else if query?.data}
