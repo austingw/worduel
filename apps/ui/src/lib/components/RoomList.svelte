@@ -3,13 +3,18 @@
 	import { getRooms } from '$lib/queries.svelte';
 
 	type RoomListProps = {
-		getName: () => string;
+		name: string;
 	};
 
-	let { getName }: RoomListProps = $props();
-
+	let { name }: RoomListProps = $props();
 	const create = createRoom();
 	const query = getRooms();
+
+	function handleCreateRoom() {
+		console.log(name);
+		create.mutateAsync(name).then((res) => console.log(res));
+	}
+	console.log(name);
 </script>
 
 <div class="flex flex-col h-full w-1/2 items-center justify-start gap-4">
@@ -51,11 +56,7 @@
 	{/if}
 	{#if !query.isLoading}
 		<div class="flex flex-row w-full items-center justify-center gap-4">
-			<button
-				class="btn btn-secondary"
-				onclick={async () => create.mutateAsync(getName()).then((res) => console.log(res))}
-				>Create Room</button
-			>
+			<button class="btn btn-secondary" onclick={handleCreateRoom}>Create Room</button>
 		</div>
 	{/if}
 </div>
