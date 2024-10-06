@@ -12,12 +12,7 @@
 	const query = getRooms();
 </script>
 
-<div class="flex flex-col items-center justify-center">
-	<button
-		class="btn btn-secondary"
-		onclick={async () => create.mutateAsync(getName()).then((res) => console.log(res))}
-		>Create Room</button
-	>
+<div class="flex flex-col h-full w-1/2 items-center justify-start gap-4">
 	{#if query.isLoading}
 		<span class="loading loading-spinner loading-lg text-secondary"></span>
 	{:else if query?.data}
@@ -51,5 +46,16 @@
 				{/each}
 			</tbody>
 		</table>
+	{:else}
+		<p>No rooms available</p>
+	{/if}
+	{#if !query.isLoading}
+		<div class="flex flex-row w-full items-center justify-center gap-4">
+			<button
+				class="btn btn-secondary"
+				onclick={async () => create.mutateAsync(getName()).then((res) => console.log(res))}
+				>Create Room</button
+			>
+		</div>
 	{/if}
 </div>
