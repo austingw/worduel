@@ -67,7 +67,10 @@
 	});
 </script>
 
-<div class="w-full flex flex-col items-center justify-center gap-8">
+<div class="w-full h-full flex flex-col items-center justify-start gap-8 pt-8">
+	<article class="prose text-center">
+		<h1 class="underline align">Worduel</h1>
+	</article>
 	{#if view === 'start'}
 		<Start {name} {changeView} />
 	{:else if view === 'list'}
