@@ -1,7 +1,8 @@
 import { env } from '$env/dynamic/public';
-import { createQuery } from '@tanstack/svelte-query';
+import { createQuery, type CreateQueryResult } from '@tanstack/svelte-query';
+import type { Room } from './types';
 
-export const getRooms = () => {
+export const getRooms = (): CreateQueryResult<Room[], Error> => {
 	return createQuery(() => ({
 		queryKey: ['rooms'],
 		queryFn: async () => {
@@ -10,7 +11,6 @@ export const getRooms = () => {
 				throw new Error('Failed to fetch rooms');
 			}
 			const data = await response.json();
-			console.log(data.rooms);
 			return Object.values(data.rooms);
 		}
 	}));
