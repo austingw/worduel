@@ -22,6 +22,8 @@ func (app *application) createRoomHandler(w http.ResponseWriter, r *http.Request
 	newRoom := Room{
 		Name:  input.Name,
 		Users: [2]User{},
+		// TODO: add logic to randomly pull word from list
+		CurrentWord: "tares",
 	}
 
 	app.rooms[input.Name] = newRoom
