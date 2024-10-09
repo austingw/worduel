@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { createRoom } from '$lib/mutations.svelte';
 	import { getRooms } from '$lib/queries.svelte';
+	import { useQueryClient } from '@tanstack/svelte-query';
 
 	type RoomListProps = {
 		name: string;
@@ -9,12 +10,17 @@
 	let { name }: RoomListProps = $props();
 	const create = createRoom();
 	const query = getRooms();
+	const queryClient = useQueryClient();
 
 	function handleCreateRoom() {
-		console.log(name);
-		create.mutateAsync(name).then((res) => console.log(res));
+		create.mutateAsync(name).then((res) => {
+			if (res.rooms) {
+				queryClient.invalidateQueries({
+					queryKey: ['rooms']
+				});
+			}
+		});
 	}
-	console.log(name);
 </script>
 
 <div class="flex flex-col h-full w-1/2 items-center justify-start gap-4">
@@ -34,8 +40,8 @@
 				{#each query.data as room, index}
 					<tr>
 						<td>{index + 1}</td>
-						<td>{room.name}</td>
-						<td>1 / 2</td>
+						<td>{room?.name}</td>
+						<td>{room?.users?.filter((u) => u?.name?.length > 0)?.length} / 2</td>
 						<td>
 							<button
 								class={`btn btn-accent btn-xs ${
