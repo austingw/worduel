@@ -18,7 +18,7 @@
 
 <div class="w-full h-full flex flex-col items-center justify-start gap-8 pt-12">
 	<article class="prose text-center">
-		<h1 class="underline">Worduel {name}</h1>
+		<h1 class="underline">Worduel</h1>
 	</article>
 
 	{#if view === 'start'}
