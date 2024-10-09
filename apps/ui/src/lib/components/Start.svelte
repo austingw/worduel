@@ -8,6 +8,16 @@
 
 	let { inputName, changeView }: StartProps = $props();
 	let newName = $state<string>('');
+
+	function handleNameInput(name: string) {
+		if (name === '') {
+			alert('Please enter your name');
+			return;
+		}
+		inputName(name);
+		localStorage.setItem('name', name);
+		changeView('list');
+	}
 </script>
 
 <div class="flex flex-col h-full w-9/12 items-center justify-start gap-4">
@@ -19,16 +29,6 @@
 			placeholder="Enter name..."
 			class="input input-bordered"
 		/>
-		<button
-			class="btn btn-secondary"
-			onclick={() => {
-				if (newName === '') {
-					alert('Please enter your name');
-					return;
-				}
-				inputName(newName);
-				changeView('list');
-			}}>Confirm</button
-		>
+		<button class="btn btn-secondary" onclick={() => handleNameInput(newName)}>Confirm</button>
 	</div>
 </div>

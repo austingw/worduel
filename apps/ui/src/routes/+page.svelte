@@ -14,6 +14,14 @@
 	function inputName(newName: string) {
 		name = newName;
 	}
+
+	$effect(() => {
+		const localName = localStorage.getItem('name');
+		if (localName && localName?.length > 0) {
+			name = localName;
+			changeView('list');
+		}
+	});
 </script>
 
 <div class="w-full h-full flex flex-col items-center justify-start gap-8 pt-12">
