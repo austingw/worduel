@@ -24,9 +24,9 @@
 	{#if view === 'start'}
 		<Start {inputName} {changeView} />
 	{:else if view === 'list'}
-		<RoomList {name} />
+		<RoomList {name} {changeView} />
 	{:else if view === 'room'}
-		<Room />
+		<Room {name} {changeView} />
 	{/if}
 	<button class="btn btn-secondary" onclick={() => console.log(name)}>Jm</button>
 </div>
