@@ -3,6 +3,8 @@ package main
 import (
 	"errors"
 	"net/http"
+
+	"github.com/coder/websocket"
 )
 
 func (app *application) createRoomHandler(w http.ResponseWriter, r *http.Request) {
@@ -27,7 +29,7 @@ func (app *application) createRoomHandler(w http.ResponseWriter, r *http.Request
 	}
 
 	app.rooms[input.Name] = newRoom
-	err = app.writeJSON(w, http.StatusOK, envelope{"rooms": app.rooms}, nil)
+	err = app.writeJSON(w, http.StatusOK, envelope{"newRoom": newRoom}, nil)
 	if err != nil {
 		app.logger.Error(err.Error())
 		http.Error(w, "The server encountered a problem and could not process your request", http.StatusInternalServerError)
@@ -44,7 +46,7 @@ func (app *application) listRoomsHandler(w http.ResponseWriter, r *http.Request)
 	}
 }
 
-func (app *application) joinRoom(name string, user User) (string, error) {
+func (app *application) joinRoom(name string, username string, conn *websocket.Conn) (string, error) {
 	app.mu.Lock()
 	defer app.mu.Unlock()
 
@@ -54,9 +56,15 @@ func (app *application) joinRoom(name string, user User) (string, error) {
 	}
 
 	if room.Users[0].Name == "" {
-		room.Users[0] = user
+		room.Users[0] = User{
+			Name: username,
+			Ws:   conn,
+		}
 	} else if room.Users[1].Name == "" {
-		room.Users[1] = user
+		room.Users[1] = User{
+			Name: username,
+			Ws:   conn,
+		}
 	} else {
 		return "", errors.New("Room is full")
 	}
