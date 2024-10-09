@@ -28,5 +28,4 @@
 	{:else if view === 'room'}
 		<Room {name} {changeView} />
 	{/if}
-	<button class="btn btn-secondary" onclick={() => console.log(name)}>Jm</button>
 </div>
