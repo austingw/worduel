@@ -1,10 +1,21 @@
 import { env } from '$env/dynamic/public';
 
+let webSocketEstablished = false;
+let ws = $state<WebSocket | null>(null);
+
 let wsMessages = $state<string[]>(['test']);
 let showNotification = $state(false);
 let notification = $state<string>('');
 
-export function establishWebSocket(webSocketEstablished: boolean) {
+export function getWs() {
+	return ws;
+}
+
+export function setWs() {
+	ws = establishWs(webSocketEstablished);
+}
+
+export function establishWs(webSocketEstablished: boolean) {
 	const parsedUrl = env.PUBLIC_API_URL.split(':').slice(1).join(':');
 
 	if (webSocketEstablished) {
@@ -43,7 +54,7 @@ export function sendJoin({ ws, room, user }: { ws: WebSocket; room: string; user
 }
 
 export function sendAnswer({ ws, answer, user }: { ws: WebSocket; answer: string; user: string }) {
-	ws.send(JSON.stringify({ type: 'attend', content: answer, user }));
+	ws.send(JSON.stringify({ type: 'attempt', content: answer, user }));
 }
 
 export function sendLeave(ws: WebSocket) {
