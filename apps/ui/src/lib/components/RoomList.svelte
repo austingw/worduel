@@ -1,25 +1,44 @@
 <script lang="ts">
 	import { createRoom } from '$lib/mutations.svelte';
 	import { getRooms } from '$lib/queries.svelte';
+	import type { View } from '$lib/types';
 	import { useQueryClient } from '@tanstack/svelte-query';
+	import { getWs, setWs, sendJoin } from '$lib/websocket.svelte';
 
 	type RoomListProps = {
 		name: string;
+		changeView: (newView: View) => void;
 	};
 
-	let { name }: RoomListProps = $props();
+	let { name, changeView }: RoomListProps = $props();
 	const create = createRoom();
 	const query = getRooms();
 	const queryClient = useQueryClient();
 
+	let ws = $state<WebSocket | null>(null);
+
 	function handleCreateRoom() {
 		create.mutateAsync(name).then((res) => {
-			if (res.rooms) {
+			if (res.newRoom) {
 				queryClient.invalidateQueries({
 					queryKey: ['rooms']
 				});
+				handleJoinRoom(res.newRoom.name);
 			}
 		});
+	}
+
+	async function handleJoinRoom(room: string) {
+		setWs();
+		ws = getWs();
+		if (ws?.readyState === 1) {
+			sendJoin({
+				ws,
+				room,
+				user: name
+			});
+		}
+		changeView('room');
 	}
 </script>
 
@@ -47,7 +66,7 @@
 								class={`btn btn-accent btn-xs ${
 									room?.users[0]?.name !== '' && room?.users[1]?.name !== '' && 'btn-disabled'
 								}`}
-								onclick={() => console.log('joins room')}
+								onclick={() => handleJoinRoom(room?.name)}
 								>{room?.users[0]?.name !== '' && room?.users[1]?.name !== ''
 									? 'Full'
 									: 'Join'}</button

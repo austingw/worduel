@@ -2,11 +2,16 @@
 	import Grid from '$lib/components/Grid.svelte';
 	import Notifications from '$lib/components/Notifications.svelte';
 	import Keyboard from '$lib/components/Keyboard.svelte';
+	import { getWs, sendAnswer, sendLeave } from '$lib/websocket.svelte';
+	import type { View } from '$lib/types';
 
-	import { establishWebSocket } from '$lib/websocket.svelte';
+	type RoomProps = {
+		name: string;
+		changeView: (newView: View) => void;
+	};
+	let { name, changeView }: RoomProps = $props();
 
-	let webSocketEstablished = false;
-	let ws = $state<WebSocket | null>(null);
+	const ws = getWs();
 	let letters = $state<string[]>([]);
 	let currentAttempt = $derived<string>(letters.join(''));
 	let attempts = $state<string[]>([]);
@@ -28,28 +33,12 @@
 		if (currentAttempt.length < 5) {
 			return;
 		}
-		ws?.send(
-			JSON.stringify({
-				type: 'join',
-				content: 'fef',
-				user: {
-					name: 'jeff',
-					score: 1
-				}
-			})
-		);
+		if (ws !== null) {
+			sendAnswer({ ws, answer: currentAttempt, user: name });
+		}
 		attempts.push(currentAttempt);
 		letters = [];
 	}
-
-	$effect(() => {
-		ws = establishWebSocket(webSocketEstablished);
-		return () => {
-			if (ws) {
-				ws.close();
-			}
-		};
-	});
 </script>
 
 <Grid {letters} {attempts} {answer} />
