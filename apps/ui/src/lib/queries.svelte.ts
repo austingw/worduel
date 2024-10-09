@@ -5,6 +5,7 @@ import type { Room } from './types';
 export const getRooms = (): CreateQueryResult<Room[], Error> => {
 	return createQuery(() => ({
 		queryKey: ['rooms'],
+		refetchInterval: 1000,
 		queryFn: async () => {
 			const response = await fetch(`${env.PUBLIC_API_URL}/rooms`);
 			if (!response.ok) {
