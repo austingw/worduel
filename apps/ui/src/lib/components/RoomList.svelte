@@ -29,9 +29,9 @@
 	}
 
 	async function handleJoinRoom(room: string) {
-		setWs();
+		await setWs();
 		ws = getWs();
-		if (ws?.readyState === 1) {
+		if (ws?.readyState === WebSocket.OPEN) {
 			sendJoin({
 				ws,
 				room,

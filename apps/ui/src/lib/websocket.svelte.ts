@@ -1,6 +1,5 @@
 import { env } from '$env/dynamic/public';
 
-let webSocketEstablished = false;
 let ws = $state<WebSocket | null>(null);
 
 let wsMessages = $state<string[]>(['test']);
@@ -11,42 +10,48 @@ export function getWs() {
 	return ws;
 }
 
-export function setWs() {
-	ws = establishWs(webSocketEstablished);
+export async function setWs() {
+	ws = await establishWs();
 }
 
-export function establishWs(webSocketEstablished: boolean) {
+export async function establishWs(): Promise<WebSocket | null> {
 	const parsedUrl = env.PUBLIC_API_URL.split(':').slice(1).join(':');
 
-	if (webSocketEstablished) {
+	if (getWs() !== null) {
 		return null;
 	}
 	const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
 	const newWs = new WebSocket(`${protocol}${parsedUrl}/ws`);
 
-	webSocketEstablished = true;
+	return new Promise((resolve, reject) => {
+		newWs.addEventListener('open', (event) => {
+			console.log('[websocket] connection open', event);
+			resolve(newWs);
+		});
 
-	newWs.addEventListener('open', (event) => {
-		webSocketEstablished = true;
-		console.log('[websocket] connection open', event);
+		newWs.addEventListener('close', () => {
+			sendLeave(newWs);
+			wsMessages = [];
+		});
+
+		newWs.addEventListener('error', (error) => {
+			console.error('[websocket] connection error', error);
+			reject(error);
+		});
+
+		newWs.addEventListener('message', (message: MessageEvent) => {
+			const data: { message: string } = JSON.parse(message.data);
+			if (data.message === '' || data.message === undefined) {
+				return;
+			}
+			wsMessages = [data.message, ...wsMessages];
+			notification = data.message;
+			showNotification = true;
+			setTimeout(() => {
+				showNotification = false;
+			}, 5000);
+		});
 	});
-	newWs.addEventListener('close', () => {
-		sendLeave(newWs);
-		wsMessages = [];
-	});
-	newWs.addEventListener('message', (message: MessageEvent) => {
-		const data: { message: string } = JSON.parse(message.data);
-		if (data.message === '' || data.message === undefined) {
-			return;
-		}
-		wsMessages = [data.message, ...wsMessages];
-		notification = data.message;
-		showNotification = true;
-		setTimeout(() => {
-			showNotification = false;
-		}, 5000);
-	});
-	return newWs;
 }
 
 export function sendJoin({ ws, room, user }: { ws: WebSocket; room: string; user: string }) {
