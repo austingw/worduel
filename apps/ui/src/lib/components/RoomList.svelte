@@ -3,7 +3,7 @@
 	import { getRooms } from '$lib/queries.svelte';
 	import type { View } from '$lib/types';
 	import { useQueryClient } from '@tanstack/svelte-query';
-	import { getWs, setWs, sendJoin } from '$lib/websocket.svelte';
+	import { setWs, sendJoin } from '$lib/websocket.svelte';
 
 	type RoomListProps = {
 		name: string;
@@ -14,8 +14,6 @@
 	const create = createRoom();
 	const query = getRooms();
 	const queryClient = useQueryClient();
-
-	let ws = $state<WebSocket | null>(null);
 
 	function handleCreateRoom() {
 		create.mutateAsync(name).then((res) => {
@@ -29,8 +27,7 @@
 	}
 
 	async function handleJoinRoom(room: string) {
-		await setWs();
-		ws = getWs();
+		const ws = await setWs();
 		if (ws?.readyState === WebSocket.OPEN) {
 			sendJoin({
 				ws,

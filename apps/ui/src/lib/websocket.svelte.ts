@@ -12,6 +12,7 @@ export function getWs() {
 
 export async function setWs() {
 	ws = await establishWs();
+	return ws;
 }
 
 export async function establishWs(): Promise<WebSocket | null> {
