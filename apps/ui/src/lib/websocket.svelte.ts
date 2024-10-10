@@ -54,12 +54,28 @@ export async function establishWs(): Promise<WebSocket | null> {
 	});
 }
 
-export function sendJoin({ ws, room, user }: { ws: WebSocket; room: string; user: string }) {
-	ws.send(JSON.stringify({ type: 'join', content: room, user }));
+export function sendJoin({
+	ws,
+	room,
+	username
+}: {
+	ws: WebSocket;
+	room: string;
+	username: string;
+}) {
+	ws.send(JSON.stringify({ type: 'join', content: room, username }));
 }
 
-export function sendAnswer({ ws, answer, user }: { ws: WebSocket; answer: string; user: string }) {
-	ws.send(JSON.stringify({ type: 'attempt', content: answer, user }));
+export function sendAnswer({
+	ws,
+	answer,
+	username
+}: {
+	ws: WebSocket;
+	answer: string;
+	username: string;
+}) {
+	ws.send(JSON.stringify({ type: 'attempt', content: answer, username }));
 }
 
 export function sendLeave(ws: WebSocket) {

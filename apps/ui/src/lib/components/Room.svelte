@@ -34,7 +34,7 @@
 			return;
 		}
 		if (ws !== null) {
-			sendAnswer({ ws, answer: currentAttempt, user: name });
+			sendAnswer({ ws, answer: currentAttempt, username: name });
 		}
 		attempts.push(currentAttempt);
 		letters = [];

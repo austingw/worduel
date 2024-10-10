@@ -35,7 +35,7 @@
 			sendJoin({
 				ws,
 				room,
-				user: name
+				username: name
 			});
 		}
 		changeView('room');
