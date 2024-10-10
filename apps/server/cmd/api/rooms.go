@@ -70,5 +70,5 @@ func (app *application) joinRoom(name string, username string, conn *websocket.C
 	}
 
 	app.rooms[name] = room
-	return "Successfully joined room:" + name, nil
+	return username + " successfully joined room!", nil
 }
