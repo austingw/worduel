@@ -49,7 +49,6 @@ func (app *application) websocketHandler(w http.ResponseWriter, r *http.Request)
 		case input.Type == "join":
 			{
 				msg, err := app.joinRoom(input.Content, input.Username, c)
-				app.logger.Info("This was correcntly hit?", msg)
 				if err != nil {
 					app.logger.Error(err.Error())
 				}
