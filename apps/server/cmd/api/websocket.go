@@ -12,6 +12,7 @@ import (
 
 type Message struct {
 	Content  string `json:"content"`
+	Room     string `json:"room"`
 	Type     string `json:"type"`
 	Username string `json:"username"`
 }
