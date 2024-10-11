@@ -63,6 +63,14 @@ func (app *application) websocketHandler(w http.ResponseWriter, r *http.Request)
 			}
 		case input.Type == "leave":
 			{
+				msg, err := app.leaveRoom(input.Content, input.Username, c)
+				if err != nil {
+					app.logger.Error(err.Error())
+				}
+				err = wsjson.Write(ctx, c, envelope{"message": msg})
+				if err != nil {
+					app.logger.Error(err.Error())
+				}
 			}
 		}
 
