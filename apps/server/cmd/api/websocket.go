@@ -80,3 +80,19 @@ func (app *application) websocketHandler(w http.ResponseWriter, r *http.Request)
 		// }
 	}
 }
+
+func (app *application) sendJsonToPlayers(name, msg string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Minute)
+	defer cancel()
+	room, ok := app.rooms[name]
+	if !ok {
+		return errors.New("Room does not exist")
+	}
+	for _, user := range room.Users {
+		err := wsjson.Write(ctx, user.Ws, envelope{"message": msg})
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
