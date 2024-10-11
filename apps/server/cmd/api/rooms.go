@@ -1,10 +1,13 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"net/http"
+	"time"
 
 	"github.com/coder/websocket"
+	"github.com/coder/websocket/wsjson"
 )
 
 func (app *application) createRoomHandler(w http.ResponseWriter, r *http.Request) {
@@ -47,6 +50,9 @@ func (app *application) listRoomsHandler(w http.ResponseWriter, r *http.Request)
 }
 
 func (app *application) joinRoom(name string, username string, conn *websocket.Conn) (string, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
 	app.mu.Lock()
 	defer app.mu.Unlock()
 
@@ -60,10 +66,24 @@ func (app *application) joinRoom(name string, username string, conn *websocket.C
 			Name: username,
 			Ws:   conn,
 		}
+
+		err := wsjson.Write(ctx, conn, envelope{"message": "Room " + name + "successfully created!"})
+		if err != nil {
+			app.logger.Error(err.Error())
+		}
 	} else if room.Users[1].Name == "" {
 		room.Users[1] = User{
 			Name: username,
 			Ws:   conn,
+		}
+
+		err := wsjson.Write(ctx, room.Users[0].Ws, envelope{"message": username + " joined room!"})
+		if err != nil {
+			app.logger.Error(err.Error())
+		}
+		err = wsjson.Write(ctx, conn, envelope{"message": "Room " + name + "successfully joined!"})
+		if err != nil {
+			app.logger.Error(err.Error())
 		}
 	} else {
 		return "", errors.New("Room is full")
