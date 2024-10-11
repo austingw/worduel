@@ -81,9 +81,7 @@ func (app *application) websocketHandler(w http.ResponseWriter, r *http.Request)
 	}
 }
 
-func (app *application) sendJsonToPlayers(name, msg string) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Minute)
-	defer cancel()
+func (app *application) sendJsonToPlayers(ctx context.Context, name, msg string) error {
 	room, ok := app.rooms[name]
 	if !ok {
 		return errors.New("Room does not exist")
