@@ -72,3 +72,25 @@ func (app *application) joinRoom(name string, username string, conn *websocket.C
 	app.rooms[name] = room
 	return username + " successfully joined room!", nil
 }
+
+func (app *application) leaveRoom(name string, username string, conn *websocket.Conn) (string, error) {
+	app.mu.Lock()
+	defer app.mu.Unlock()
+
+	room, ok := app.rooms[name]
+	if !ok {
+		return "", errors.New("Room does not exist")
+	}
+
+	if username == room.Users[1].Name {
+		room.Users[1] = User{
+			Name: "",
+		}
+		return username + " left room.", nil
+	} else if username == room.Users[0].Name {
+		delete(app.rooms, name)
+		return "Owner left room. Closing now...", nil
+	} else {
+		return "", errors.New("User not in room???")
+	}
+}
