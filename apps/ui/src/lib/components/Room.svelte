@@ -41,6 +41,14 @@
 	}
 </script>
 
-<Grid {letters} {attempts} {answer} />
-<Keyboard {addLetter} {removeLetter} {submitAnswer} />
-<Notifications />
+<div>
+	<button
+		onclick={() => {
+			sendLeave({ ws, username: name });
+			changeView('list' as View);
+		}}>Leave</button
+	>
+	<Grid {letters} {attempts} {answer} />
+	<Keyboard {addLetter} {removeLetter} {submitAnswer} />
+	<Notifications />
+</div>
