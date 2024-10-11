@@ -64,23 +64,33 @@ export function sendJoin({
 	room: string;
 	username: string;
 }) {
-	ws.send(JSON.stringify({ type: 'join', content: room, username }));
+	ws.send(JSON.stringify({ type: 'join', room, username }));
 }
 
 export function sendAnswer({
 	ws,
 	answer,
+	room,
 	username
 }: {
 	ws: WebSocket;
 	answer: string;
+	room: string;
 	username: string;
 }) {
-	ws.send(JSON.stringify({ type: 'attempt', content: answer, username }));
+	ws.send(JSON.stringify({ type: 'attempt', content: answer, room, username }));
 }
 
-export function sendLeave({ ws, username }: { ws: WebSocket; username: string }) {
-	ws.send(JSON.stringify({ type: 'leave', username }));
+export function sendLeave({
+	ws,
+	room,
+	username
+}: {
+	ws: WebSocket;
+	room: string;
+	username: string;
+}) {
+	ws.send(JSON.stringify({ type: 'leave', room, username }));
 }
 
 export function getMessages() {
