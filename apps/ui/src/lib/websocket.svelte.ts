@@ -79,8 +79,8 @@ export function sendAnswer({
 	ws.send(JSON.stringify({ type: 'attempt', content: answer, username }));
 }
 
-export function sendLeave(ws: WebSocket) {
-	ws.send(JSON.stringify({ type: 'leave' }));
+export function sendLeave({ ws, username }: { ws: WebSocket; username: string }) {
+	ws.send(JSON.stringify({ type: 'leave', username }));
 }
 
 export function getMessages() {
