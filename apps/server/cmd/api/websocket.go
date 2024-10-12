@@ -36,10 +36,18 @@ func (app *application) websocketHandler(w http.ResponseWriter, r *http.Request)
 		err = wsjson.Read(ctx, c, &input)
 
 		if errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {
+			err := app.leaveRoom(input.Room, input.Username, c)
+			if err != nil {
+				app.logger.Error(err.Error())
+			}
 			return
 		}
 		if websocket.CloseStatus(err) == websocket.StatusNormalClosure ||
 			websocket.CloseStatus(err) == websocket.StatusGoingAway {
+			err := app.leaveRoom(input.Room, input.Username, c)
+			if err != nil {
+				app.logger.Error(err.Error())
+			}
 			return
 		}
 		if err != nil {
@@ -49,10 +57,11 @@ func (app *application) websocketHandler(w http.ResponseWriter, r *http.Request)
 		switch {
 		case input.Type == "join":
 			{
-				msg, err := app.joinRoom(input.Content, input.Username, c)
+				msg, err := app.joinRoom(input.Room, input.Username, c)
 				if err != nil {
 					app.logger.Error(err.Error())
 				}
+				app.logger.Info(msg)
 				err = wsjson.Write(ctx, c, envelope{"message": msg})
 				if err != nil {
 					app.logger.Error(err.Error())
@@ -64,11 +73,7 @@ func (app *application) websocketHandler(w http.ResponseWriter, r *http.Request)
 			}
 		case input.Type == "leave":
 			{
-				msg, err := app.leaveRoom(input.Content, input.Username, c)
-				if err != nil {
-					app.logger.Error(err.Error())
-				}
-				err = wsjson.Write(ctx, c, envelope{"message": msg})
+				err := app.leaveRoom(input.Room, input.Username, c)
 				if err != nil {
 					app.logger.Error(err.Error())
 				}
