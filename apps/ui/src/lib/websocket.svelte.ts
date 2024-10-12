@@ -5,14 +5,21 @@ let ws = $state<WebSocket | null>(null);
 let wsMessages = $state<string[]>(['test']);
 let showNotification = $state(false);
 let notification = $state<string>('');
+let currentRoom = $state<string>('');
 
 export function getWs() {
 	return ws;
 }
-
 export async function setWs() {
 	ws = await establishWs();
 	return ws;
+}
+
+export function getCurrentRoom() {
+	return currentRoom;
+}
+export function setCurrentRoom(room: string) {
+	currentRoom = room;
 }
 
 export async function establishWs(): Promise<WebSocket | null> {
@@ -31,7 +38,7 @@ export async function establishWs(): Promise<WebSocket | null> {
 		});
 
 		newWs.addEventListener('close', () => {
-			sendLeave(newWs);
+			sendLeave({ ws: newWs, room: currentRoom, username: 'test' });
 			wsMessages = [];
 		});
 
