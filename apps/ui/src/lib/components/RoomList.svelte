@@ -3,7 +3,7 @@
 	import { getRooms } from '$lib/queries.svelte';
 	import type { View } from '$lib/types';
 	import { useQueryClient } from '@tanstack/svelte-query';
-	import { setWs, sendJoin } from '$lib/websocket.svelte';
+	import { setWs, sendJoin, setCurrentRoom } from '$lib/websocket.svelte';
 
 	type RoomListProps = {
 		name: string;
@@ -34,9 +34,14 @@
 				room,
 				username: name
 			});
+			setCurrentRoom(room);
+			changeView('room');
 		}
-		changeView('room');
 	}
+
+	$effect(() => {
+		setCurrentRoom('');
+	});
 </script>
 
 <div class="flex flex-col h-full w-1/2 items-center justify-start gap-4">

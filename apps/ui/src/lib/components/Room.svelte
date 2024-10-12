@@ -2,7 +2,13 @@
 	import Grid from '$lib/components/Grid.svelte';
 	import Notifications from '$lib/components/Notifications.svelte';
 	import Keyboard from '$lib/components/Keyboard.svelte';
-	import { getWs, getCurrentRoom, setCurrentRoom, sendAnswer, sendLeave } from '$lib/websocket.svelte';
+	import {
+		getWs,
+		getCurrentRoom,
+		setCurrentRoom,
+		sendAnswer,
+		sendLeave
+	} from '$lib/websocket.svelte';
 	import type { View } from '$lib/types';
 
 	type RoomProps = {
@@ -34,7 +40,7 @@
 			return;
 		}
 		if (ws !== null) {
-			sendAnswer({ ws, answer: currentAttempt, username: name });
+			sendAnswer({ ws, room: getCurrentRoom(), answer: currentAttempt, username: name });
 		}
 		attempts.push(currentAttempt);
 		letters = [];
@@ -45,7 +51,7 @@
 	<button
 		onclick={() => {
 			if (ws) {
-			sendLeave({ ws, room: getCurrentRoom(), username: name });
+				sendLeave({ ws, room: getCurrentRoom(), username: name });
 			}
 			setCurrentRoom('');
 			changeView('list' as View);
