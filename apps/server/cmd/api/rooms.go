@@ -108,6 +108,8 @@ func (app *application) leaveRoom(name string, username string, conn *websocket.
 					app.logger.Info("found him")
 					name = roomName
 					username = user.Name
+				} else {
+					return errors.New("User not found by connection")
 				}
 			}
 		}
@@ -115,7 +117,7 @@ func (app *application) leaveRoom(name string, username string, conn *websocket.
 
 	room, ok := app.rooms[name]
 	if !ok {
-		return errors.New("Room does not exist (leave)")
+		return errors.New("Room does not exist")
 	}
 
 	if username == room.Users[1].Name {
@@ -129,7 +131,7 @@ func (app *application) leaveRoom(name string, username string, conn *websocket.
 		return nil
 	} else if username == room.Users[0].Name {
 		if room.Users[1].Name != "" {
-			err := wsjson.Write(ctx, room.Users[1].Ws, envelope{"message": room.Users[0].Name + " left room. Closing room and return to list..."})
+			err := wsjson.Write(ctx, room.Users[1].Ws, envelope{"message": room.Users[0].Name + " left room. Closing room and return to lobby..."})
 			if err != nil {
 				app.logger.Error(err.Error())
 			}
