@@ -115,9 +115,11 @@ func (app *application) leaveRoom(name string, username string, conn *websocket.
 		}
 		return nil
 	} else if username == room.Users[0].Name {
-		err := wsjson.Write(ctx, room.Users[1].Ws, envelope{"message": room.Users[0].Name + " left room. Closing room and return to list..."})
-		if err != nil {
-			app.logger.Error(err.Error())
+		if room.Users[1].Name != "" {
+			err := wsjson.Write(ctx, room.Users[1].Ws, envelope{"message": room.Users[0].Name + " left room. Closing room and return to list..."})
+			if err != nil {
+				app.logger.Error(err.Error())
+			}
 		}
 		delete(app.rooms, name)
 		return nil
