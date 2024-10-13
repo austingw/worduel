@@ -25,10 +25,9 @@ func (app *application) createRoomHandler(w http.ResponseWriter, r *http.Request
 	}
 
 	newRoom := Room{
-		Name:  input.Name,
-		Users: [2]User{},
-		// TODO: add logic to randomly pull word from list
-		CurrentWord: "tares",
+		Name:        input.Name,
+		Users:       [2]User{},
+		CurrentWord: "",
 	}
 
 	app.rooms[input.Name] = newRoom
@@ -76,6 +75,9 @@ func (app *application) joinRoom(name string, username string, conn *websocket.C
 			Name: username,
 			Ws:   conn,
 		}
+
+		// get new word on player 2 join
+		room.CurrentWord = app.newWord()
 
 		err := wsjson.Write(ctx, room.Users[0].Ws, envelope{"message": username + " joined room!"})
 		if err != nil {
