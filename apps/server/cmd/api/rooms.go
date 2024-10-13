@@ -100,9 +100,22 @@ func (app *application) leaveRoom(name string, username string, conn *websocket.
 	app.mu.Lock()
 	defer app.mu.Unlock()
 
+	// If user closes browser/loses connection, find info based on closed ws
+	if name == "" {
+		for roomName, room := range app.rooms {
+			for _, user := range room.Users {
+				if user.Ws == conn {
+					app.logger.Info("found him")
+					name = roomName
+					username = user.Name
+				}
+			}
+		}
+	}
+
 	room, ok := app.rooms[name]
 	if !ok {
-		return errors.New("Room does not exist")
+		return errors.New("Room does not exist (leave)")
 	}
 
 	if username == room.Users[1].Name {
