@@ -1,12 +1,15 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"net/http"
 	"strings"
+
+	"github.com/coder/websocket/wsjson"
 )
 
 type envelope map[string]interface{}
@@ -64,6 +67,20 @@ func (app *application) writeJSON(w http.ResponseWriter, status int, data envelo
 	err := json.NewEncoder(w).Encode(data)
 	if err != nil {
 		return err
+	}
+	return nil
+}
+
+func (app *application) writeJSONToRoom(ctx context.Context, name, msg string) error {
+	room, ok := app.rooms[name]
+	if !ok {
+		return errors.New("Room does not exist")
+	}
+	for _, user := range room.Users {
+		err := wsjson.Write(ctx, user.Ws, envelope{"message": msg})
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
