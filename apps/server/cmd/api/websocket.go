@@ -38,7 +38,7 @@ func (app *application) websocketHandler(w http.ResponseWriter, r *http.Request)
 		if errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {
 			err := app.leaveRoom(input.Room, input.Username, c)
 			if err != nil {
-				app.logger.Error(err.Error())
+				app.logger.Error(err.Error(), "fie")
 			}
 			return
 		}
@@ -51,7 +51,12 @@ func (app *application) websocketHandler(w http.ResponseWriter, r *http.Request)
 			return
 		}
 		if err != nil {
+			err := app.leaveRoom(input.Room, input.Username, c)
+			if err != nil {
+				app.logger.Error(err.Error())
+			}
 			app.logger.Error(err.Error())
+			return
 		}
 
 		switch {
@@ -79,24 +84,5 @@ func (app *application) websocketHandler(w http.ResponseWriter, r *http.Request)
 				}
 			}
 		}
-
-		// err = wsjson.Write(ctx, c, input)
-		// if err != nil {
-		// 	app.logger.Error(err.Error())
-		// }
 	}
-}
-
-func (app *application) sendJsonToPlayers(ctx context.Context, name, msg string) error {
-	room, ok := app.rooms[name]
-	if !ok {
-		return errors.New("Room does not exist")
-	}
-	for _, user := range room.Users {
-		err := wsjson.Write(ctx, user.Ws, envelope{"message": msg})
-		if err != nil {
-			return err
-		}
-	}
-	return nil
 }
