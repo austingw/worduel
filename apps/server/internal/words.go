@@ -1,6 +1,8 @@
 package words
 
-var List = [...]string{
+import "math/rand"
+
+var wordList = [...]string{
 	"aback",
 	"abase",
 	"abate",
@@ -2501,4 +2503,8 @@ var List = [...]string{
 	"yummy",
 	"zebra",
 	"zones",
+}
+
+func NewWord() string {
+	return wordList[rand.Intn(len(wordList))]
 }
