@@ -40,6 +40,7 @@ func (app *application) createRoomHandler(w http.ResponseWriter, r *http.Request
 }
 
 func (app *application) listRoomsHandler(w http.ResponseWriter, r *http.Request) {
+	app.logger.Info(string(app.rooms["jem"].Users[1].Name))
 	err := app.writeJSON(w, http.StatusOK, envelope{"rooms": app.rooms}, nil)
 	if err != nil {
 		app.logger.Error(err.Error())
@@ -107,11 +108,8 @@ func (app *application) leaveRoom(name string, username string, conn *websocket.
 		for roomName, room := range app.rooms {
 			for _, user := range room.Users {
 				if user.Ws == conn {
-					app.logger.Info("found him")
 					name = roomName
 					username = user.Name
-				} else {
-					return errors.New("User not found by connection")
 				}
 			}
 		}
@@ -123,15 +121,17 @@ func (app *application) leaveRoom(name string, username string, conn *websocket.
 	}
 
 	if username == room.Users[1].Name {
-		room.Users[1] = User{
-			Name: "",
-		}
+		room.Users[1] = User{}
+		app.rooms[name] = room
+
 		err := wsjson.Write(ctx, room.Users[0].Ws, envelope{"message": username + " left room."})
 		if err != nil {
 			app.logger.Error(err.Error())
 		}
+
 		return nil
 	} else if username == room.Users[0].Name {
+
 		if room.Users[1].Name != "" {
 			err := wsjson.Write(ctx, room.Users[1].Ws, envelope{"message": room.Users[0].Name + " left room. Closing room and return to lobby..."})
 			if err != nil {
@@ -139,8 +139,40 @@ func (app *application) leaveRoom(name string, username string, conn *websocket.
 			}
 		}
 		delete(app.rooms, name)
+
 		return nil
 	} else {
 		return errors.New("User not in room???")
+	}
+}
+
+func (app *application) cleanupRoom() {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	for roomName, room := range app.rooms {
+		for i := range room.Users {
+			// Create a new context for each ping operation
+			pingCtx, pingCancel := context.WithTimeout(ctx, 5*time.Second)
+			defer pingCancel()
+
+			err := wsjson.Write(pingCtx, room.Users[i].Ws, envelope{"type": "ping"})
+			if err != nil {
+				if i == 0 {
+					err = wsjson.Write(ctx, room.Users[1].Ws, envelope{"message": room.Users[0].Name + " left room. Closing room and return to lobby..."})
+					if err != nil {
+						app.logger.Error(err.Error())
+					}
+					delete(app.rooms, roomName)
+				} else if i == 1 {
+					room.Users[1] = User{}
+					app.rooms[roomName] = room
+					err = wsjson.Write(ctx, room.Users[0].Ws, envelope{"message": room.Users[1].Name + " left room."})
+					if err != nil {
+						app.logger.Error(err.Error())
+					}
+				}
+			}
+		}
 	}
 }
