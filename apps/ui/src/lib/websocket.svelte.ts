@@ -1,4 +1,5 @@
 import { env } from '$env/dynamic/public';
+import { setGameStart } from './game.svelte';
 
 let ws = $state<WebSocket | null>(null);
 
@@ -48,10 +49,20 @@ export async function establishWs(): Promise<WebSocket | null> {
 		});
 
 		newWs.addEventListener('message', (message: MessageEvent) => {
-			const data: { message: string } = JSON.parse(message.data);
+			const data: { type: string; message: string } = JSON.parse(message.data);
+
 			if (data.message === '' || data.message === undefined) {
 				return;
 			}
+
+			if (data.type === 'start') {
+				setTimeout(() => {
+					setGameStart(true);
+				}, 3000);
+			} else if (data.type === 'end') {
+				setGameStart(false);
+			}
+
 			wsMessages = [data.message, ...wsMessages];
 			notification = data.message;
 			showNotification = true;
