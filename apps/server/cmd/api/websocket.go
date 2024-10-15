@@ -62,19 +62,17 @@ func (app *application) websocketHandler(w http.ResponseWriter, r *http.Request)
 		switch {
 		case input.Type == "join":
 			{
-				msg, err := app.joinRoom(input.Room, input.Username, c)
-				if err != nil {
-					app.logger.Error(err.Error())
-				}
-				app.logger.Info(msg)
-				err = wsjson.Write(ctx, c, envelope{"message": msg})
+				err := app.joinRoom(input.Room, input.Username, c)
 				if err != nil {
 					app.logger.Error(err.Error())
 				}
 			}
 		case input.Type == "attempt":
 			{
-				app.logger.Info("an attempt was made", input.Content)
+				err = app.checkAnswer(input, c)
+				if err != nil {
+					app.logger.Error(err.Error())
+				}
 			}
 		case input.Type == "leave":
 			{
