@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { getGameStart } from '$lib/game.svelte';
+
 	type KeyboardProps = {
 		addLetter: (letter: string) => void;
 		removeLetter: () => void;
@@ -14,6 +16,7 @@
 			{#each row as letter}
 				<button
 					class="btn btn-circle btn-neutral btn-sm sm:btn-md"
+					disabled={!getGameStart()}
 					onclick={() => addLetter(letter)}>{letter}</button
 				>
 			{/each}
@@ -23,16 +26,20 @@
 	<div class="flex flex-row justify-center items-center gap-1">
 		<button
 			class="btn btn-circle btn-secondary btn-sm sm:btn-md text-[.5rem] sm:text-sm"
+			disabled={!getGameStart()}
 			onclick={() => submitAnswer()}>Enter</button
 		>
 		{#each 'zxcvbnm' as letter}
-			<button class="btn btn-circle btn-neutral btn-sm sm:btn-md" onclick={() => addLetter(letter)}
-				>{letter}</button
+			<button
+				class="btn btn-circle btn-neutral btn-sm sm:btn-md"
+				disabled={!getGameStart()}
+				onclick={() => addLetter(letter)}>{letter}</button
 			>
 		{/each}
 
 		<button
 			class="btn btn-circle text-lg btn-accent btn-sm sm:btn-md"
+			disabled={!getGameStart()}
 			onclick={() => removeLetter()}
 			>←
 		</button>
