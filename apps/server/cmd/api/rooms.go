@@ -50,7 +50,7 @@ func (app *application) listRoomsHandler(w http.ResponseWriter, r *http.Request)
 	}
 }
 
-func (app *application) joinRoom(name string, username string, conn *websocket.Conn) (string, error) {
+func (app *application) joinRoom(name string, username string, conn *websocket.Conn) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -59,7 +59,7 @@ func (app *application) joinRoom(name string, username string, conn *websocket.C
 
 	room, ok := app.rooms[name]
 	if !ok {
-		return "", errors.New("Room does not exist")
+		return errors.New("Room does not exist")
 	}
 
 	if room.Users[0].Name == "" {
@@ -81,20 +81,20 @@ func (app *application) joinRoom(name string, username string, conn *websocket.C
 		// get new word on player 2 join
 		room.CurrentWord = words.NewWord()
 
-		err := wsjson.Write(ctx, room.Users[0].Ws, envelope{"message": username + " joined room!"})
+		err := wsjson.Write(ctx, room.Users[0].Ws, envelope{"type": "start", "message": username + " joined room!"})
 		if err != nil {
 			app.logger.Error(err.Error())
 		}
-		err = wsjson.Write(ctx, conn, envelope{"message": "Room " + name + "successfully joined!"})
+		err = wsjson.Write(ctx, conn, envelope{"type": "start", "message": "Room " + name + "successfully joined!"})
 		if err != nil {
 			app.logger.Error(err.Error())
 		}
 	} else {
-		return "", errors.New("Room is full")
+		return errors.New("Room is full")
 	}
 
 	app.rooms[name] = room
-	return username + " successfully joined room!", nil
+	return nil
 }
 
 func (app *application) leaveRoom(name string, username string, conn *websocket.Conn) error {
