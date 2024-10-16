@@ -4,6 +4,8 @@ import { setGameStart } from './game.svelte';
 let ws = $state<WebSocket | null>(null);
 
 let wsMessages = $state<string[]>(['test']);
+let startMsg = $state<string>('');
+let showStart = $state<boolean>(false);
 let showNotification = $state(false);
 let notification = $state<string>('');
 let currentRoom = $state<string>('');
@@ -50,6 +52,7 @@ export async function establishWs(): Promise<WebSocket | null> {
 
 		newWs.addEventListener('message', (message: MessageEvent) => {
 			const data: { type: string; message: string } = JSON.parse(message.data);
+			console.log(data);
 
 			if (data.message === '' || data.message === undefined) {
 				return;
@@ -57,8 +60,22 @@ export async function establishWs(): Promise<WebSocket | null> {
 
 			if (data.type === 'start') {
 				setTimeout(() => {
-					setGameStart(true);
+					showStart = true;
+					startMsg = 'Game starting in 3...';
 				}, 3000);
+				setTimeout(() => {
+					startMsg = 'Game starting in 2...';
+				}, 4000);
+				setTimeout(() => {
+					startMsg = 'Game starting in 1...';
+				}, 5000);
+				setTimeout(() => {
+					startMsg = 'Start!';
+					setGameStart(true);
+				}, 6000);
+				setTimeout(() => {
+					showStart = false;
+				}, 9000);
 			} else if (data.type === 'end') {
 				setGameStart(false);
 			}
@@ -121,4 +138,12 @@ export function getNotification() {
 
 export function getShowNotification() {
 	return showNotification;
+}
+
+export function getStartMsg() {
+	return startMsg;
+}
+
+export function getShowStart() {
+	return showStart;
 }
