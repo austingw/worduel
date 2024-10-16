@@ -45,7 +45,10 @@ func (app *application) checkAnswer(attempt Message, conn *websocket.Conn) error
 				}
 			}
 		}
-		room.CurrentWord = words.NewWord()
+		time.AfterFunc(3*time.Second, func() {
+			app.writeJSONToRoom(room.Name, envelope{"type": "start", "message": "Next round will begin shortly..."})
+			room.CurrentWord = words.NewWord()
+		})
 		app.rooms[room.Name] = room
 	}
 	return nil
