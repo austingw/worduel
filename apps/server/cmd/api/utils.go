@@ -8,6 +8,7 @@ import (
 	"io"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/coder/websocket/wsjson"
 )
@@ -71,13 +72,15 @@ func (app *application) writeJSON(w http.ResponseWriter, status int, data envelo
 	return nil
 }
 
-func (app *application) writeJSONToRoom(ctx context.Context, name, msg string) error {
+func (app *application) writeJSONToRoom(name string, msg envelope) error {
 	room, ok := app.rooms[name]
 	if !ok {
 		return errors.New("Room does not exist")
 	}
 	for _, user := range room.Users {
-		err := wsjson.Write(ctx, user.Ws, envelope{"message": msg})
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		err := wsjson.Write(ctx, user.Ws, msg)
 		if err != nil {
 			return err
 		}
