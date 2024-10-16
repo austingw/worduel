@@ -1,5 +1,10 @@
 <script lang="ts">
-	import { getMessages, getShowNotification } from '$lib/websocket.svelte';
+	import {
+		getMessages,
+		getShowNotification,
+		getStartMsg,
+		getShowStart
+	} from '$lib/websocket.svelte';
 	let msgs = $state(getMessages());
 
 	$effect(() => {
@@ -10,6 +15,15 @@
 {#if getShowNotification()}
 	<div role="alert" class="alert bg-secondary absolute bottom-4 right-4 w-fit h-fit animate-bounce">
 		<p>{msgs[0]}</p>
+	</div>
+{/if}
+
+{#if getShowStart()}
+	<div
+		role="alert"
+		class="toast toast-top toast-center bg-primary absolute top-8 w-fit h-fit animate-bounce"
+	>
+		<p>{getStartMsg()}</p>
 	</div>
 {/if}
 
