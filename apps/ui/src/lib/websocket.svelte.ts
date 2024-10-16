@@ -75,7 +75,7 @@ export async function establishWs(): Promise<WebSocket | null> {
 				}, 6000);
 				setTimeout(() => {
 					showStart = false;
-				}, 9000);
+				}, 8000);
 			} else if (data.type === 'end') {
 				setGameStart(false);
 			}
@@ -85,7 +85,7 @@ export async function establishWs(): Promise<WebSocket | null> {
 			showNotification = true;
 			setTimeout(() => {
 				showNotification = false;
-			}, 5000);
+			}, 3000);
 		});
 	});
 }
