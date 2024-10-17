@@ -35,7 +35,8 @@ func (app *application) checkAnswer(attempt Message, conn *websocket.Conn) error
 		var wg sync.WaitGroup
 		for i, user := range room.Users {
 			wg.Add(1)
-			go func() {
+			go func(user User, i int) {
+				defer wg.Done()
 				if user.Ws == conn {
 					err := wsjson.Write(ctx, user.Ws, envelope{"type": "end", "message": "You won!"})
 					if err != nil {
@@ -48,7 +49,7 @@ func (app *application) checkAnswer(attempt Message, conn *websocket.Conn) error
 						app.logger.Error(err.Error())
 					}
 				}
-			}()
+			}(user, i)
 		}
 		wg.Wait()
 		time.AfterFunc(3*time.Second, func() {
