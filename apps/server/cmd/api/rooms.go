@@ -67,7 +67,7 @@ func (app *application) joinRoom(name string, username string, conn *websocket.C
 			Ws:   conn,
 		}
 
-		err := wsjson.Write(ctx, conn, envelope{"message": "Room " + name + "successfully created!"})
+		err := wsjson.Write(ctx, conn, envelope{"message": "Room successfully created!"})
 		if err != nil {
 			app.logger.Error(err.Error())
 		}
@@ -84,7 +84,7 @@ func (app *application) joinRoom(name string, username string, conn *websocket.C
 		if err != nil {
 			app.logger.Error(err.Error())
 		}
-		err = wsjson.Write(ctx, conn, envelope{"type": "start", "message": "Room " + name + "successfully joined!"})
+		err = wsjson.Write(ctx, conn, envelope{"type": "start", "message": "Successfully joined " + room.Users[0].Name + "'s room!"})
 		if err != nil {
 			app.logger.Error(err.Error())
 		}
