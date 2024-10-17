@@ -5,6 +5,8 @@
 	import {
 		getWs,
 		getCurrentRoom,
+		getReturnUser,
+		setReturnUser,
 		setCurrentRoom,
 		sendAnswer,
 		sendLeave
@@ -45,6 +47,13 @@
 		attempts.push(currentAttempt);
 		letters = [];
 	}
+
+	$effect(() => {
+		if (getReturnUser()) {
+			changeView('list' as View);
+			setReturnUser(false);
+		}
+	});
 </script>
 
 <div>

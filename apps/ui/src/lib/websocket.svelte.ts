@@ -9,6 +9,7 @@ let showStart = $state<boolean>(false);
 let showNotification = $state(false);
 let notification = $state<string>('');
 let currentRoom = $state<string>('');
+let returnUser = $state<boolean>(false);
 
 export function getWs() {
 	return ws;
@@ -23,6 +24,14 @@ export function getCurrentRoom() {
 }
 export function setCurrentRoom(room: string) {
 	currentRoom = room;
+}
+
+export function getReturnUser() {
+	return returnUser;
+}
+
+export function setReturnUser(bool: boolean) {
+	returnUser = bool;
 }
 
 export async function establishWs(): Promise<WebSocket | null> {
@@ -78,6 +87,11 @@ export async function establishWs(): Promise<WebSocket | null> {
 				}, 8000);
 			} else if (data.type === 'end') {
 				setGameStart(false);
+			} else if (data.type === 'hostEnd') {
+				setGameStart(false);
+				setTimeout(() => {
+					returnUser = true;
+				}, 3000);
 			}
 
 			wsMessages = [data.message, ...wsMessages];
