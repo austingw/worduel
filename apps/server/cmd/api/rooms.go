@@ -132,7 +132,7 @@ func (app *application) leaveRoom(name string, username string, conn *websocket.
 		return nil
 	} else if conn == room.Users[0].Ws {
 		if room.Users[1].Ws != nil {
-			err := wsjson.Write(ctx, room.Users[1].Ws, envelope{"type": "end", "message": room.Users[0].Name + " left room. Closing room and return to lobby..."})
+			err := wsjson.Write(ctx, room.Users[1].Ws, envelope{"type": "hostEnd", "message": room.Users[0].Name + " left room. Closing room and return to lobby..."})
 			if err != nil {
 				app.logger.Error(err.Error())
 			}
