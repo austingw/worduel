@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"errors"
+	"sync"
 	"time"
 	words "worduel/internal"
 
@@ -31,20 +32,25 @@ func (app *application) checkAnswer(attempt Message, conn *websocket.Conn) error
 	}
 
 	if attempt.Content == room.CurrentWord {
+		var wg sync.WaitGroup
 		for i, user := range room.Users {
-			if user.Ws == conn {
-				err := wsjson.Write(ctx, user.Ws, envelope{"type": "end", "message": "You won!"})
-				if err != nil {
-					app.logger.Error(err.Error())
+			wg.Add(1)
+			go func() {
+				if user.Ws == conn {
+					err := wsjson.Write(ctx, user.Ws, envelope{"type": "end", "message": "You won!"})
+					if err != nil {
+						app.logger.Error(err.Error())
+					}
+					room.Users[i].Score++
+				} else {
+					err := wsjson.Write(ctx, user.Ws, envelope{"type": "end", "message": attempt.Username + " won!"})
+					if err != nil {
+						app.logger.Error(err.Error())
+					}
 				}
-				room.Users[i].Score++
-			} else {
-				err := wsjson.Write(ctx, user.Ws, envelope{"type": "end", "message": attempt.Username + " won!"})
-				if err != nil {
-					app.logger.Error(err.Error())
-				}
-			}
+			}()
 		}
+		wg.Wait()
 		time.AfterFunc(3*time.Second, func() {
 			app.writeJSONToRoom(room.Name, envelope{"type": "start", "message": "Next round will begin shortly..."})
 			room.CurrentWord = words.NewWord()
