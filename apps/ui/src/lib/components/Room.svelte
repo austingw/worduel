@@ -12,6 +12,7 @@
 		sendLeave
 	} from '$lib/websocket.svelte';
 	import type { View } from '$lib/types';
+	import { getRoomData } from '$lib/queries.svelte';
 
 	type RoomProps = {
 		name: string;
@@ -23,7 +24,8 @@
 	let letters = $state<string[]>([]);
 	let currentAttempt = $derived<string>(letters.join(''));
 	let attempts = $state<string[]>([]);
-	let answer = $state<string>('tares');
+	const query = getRoomData(getCurrentRoom());
+	const answer = query?.data?.currentWord ?? '';
 
 	function addLetter(letter: string) {
 		if (letters.length < 5) {
@@ -66,6 +68,8 @@
 			changeView('list' as View);
 		}}>Leave</button
 	>
+	<h1>Room: {getCurrentRoom()}</h1>
+	<h2>Scores: {query?.data?.users[0].score ?? 0} - {query?.data?.users[1].score ?? 1}</h2>
 	<Grid {letters} {attempts} {answer} />
 	<Keyboard {addLetter} {removeLetter} {submitAnswer} />
 	<Notifications />
