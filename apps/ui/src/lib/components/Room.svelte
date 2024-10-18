@@ -13,6 +13,7 @@
 	} from '$lib/websocket.svelte';
 	import type { View } from '$lib/types';
 	import { getRoomData } from '$lib/queries.svelte';
+	import { getGameStart } from '$lib/game.svelte';
 
 	type RoomProps = {
 		name: string;
@@ -25,7 +26,7 @@
 	let currentAttempt = $derived<string>(letters.join(''));
 	let attempts = $state<string[]>([]);
 	const query = getRoomData(getCurrentRoom());
-	const answer = query?.data?.currentWord ?? '';
+	const answer = $derived<string>(query?.data?.currentWord || '');
 
 	function addLetter(letter: string) {
 		if (letters.length < 5) {
@@ -54,6 +55,12 @@
 		if (getReturnUser()) {
 			changeView('list' as View);
 			setReturnUser(false);
+		}
+
+		if (getGameStart()) {
+			query.refetch();
+			attempts = [];
+			letters = [];
 		}
 	});
 </script>
