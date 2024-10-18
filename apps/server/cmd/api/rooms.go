@@ -41,7 +41,30 @@ func (app *application) createRoomHandler(w http.ResponseWriter, r *http.Request
 }
 
 func (app *application) listRoomsHandler(w http.ResponseWriter, r *http.Request) {
+	app.mu.RLock()
+	defer app.mu.RUnlock()
+
 	err := app.writeJSON(w, http.StatusOK, envelope{"rooms": app.rooms}, nil)
+	if err != nil {
+		app.logger.Error(err.Error())
+		http.Error(w, "The server encountered a problem and could not process your request", http.StatusInternalServerError)
+		return
+	}
+}
+
+func (app *application) getRoomDetailsHandler(w http.ResponseWriter, r *http.Request) {
+	app.mu.RLock()
+	defer app.mu.RUnlock()
+
+	name := r.PathValue("name")
+	room, ok := app.rooms[name]
+
+	if !ok {
+		http.Error(w, "Room does not exist!", http.StatusBadRequest)
+		return
+	}
+
+	err := app.writeJSON(w, http.StatusOK, envelope{"room": room}, nil)
 	if err != nil {
 		app.logger.Error(err.Error())
 		http.Error(w, "The server encountered a problem and could not process your request", http.StatusInternalServerError)
