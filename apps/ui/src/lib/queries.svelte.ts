@@ -26,7 +26,6 @@ export const getRoomData = (roomName: string): CreateQueryResult<Room, Error> =>
 				throw new Error('Failed to fetch room data');
 			}
 			const room = await response.json();
-			console.log('sss', room);
 			return room.room;
 		},
 		refetchInterval: false
