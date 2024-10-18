@@ -8,6 +8,7 @@ func (app *application) routes() *http.ServeMux {
 	mux.HandleFunc("/ws", app.websocketHandler)
 
 	mux.HandleFunc("GET /rooms", app.listRoomsHandler)
+	mux.HandleFunc("GET /rooms/{name}", app.getRoomDetailsHandler)
 	mux.HandleFunc("POST /rooms", app.createRoomHandler)
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {})
 
