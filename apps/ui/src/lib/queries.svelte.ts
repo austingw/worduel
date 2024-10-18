@@ -28,6 +28,7 @@ export const getRoomData = (roomName: string): CreateQueryResult<Room, Error> =>
 			const room = await response.json();
 			console.log('sss', room);
 			return room.room;
-		}
+		},
+		refetchInterval: false
 	}));
 };
