@@ -16,3 +16,18 @@ export const getRooms = (): CreateQueryResult<Room[], Error> => {
 		}
 	}));
 };
+
+export const getRoomData = (roomName: string): CreateQueryResult<Room, Error> => {
+	return createQuery(() => ({
+		queryKey: ['room', roomName],
+		queryFn: async () => {
+			const response = await fetch(`${env.PUBLIC_API_URL}/rooms/${roomName}`);
+			if (!response.ok) {
+				throw new Error('Failed to fetch room data');
+			}
+			const room = await response.json();
+			console.log('sss', room);
+			return room.room;
+		}
+	}));
+};
