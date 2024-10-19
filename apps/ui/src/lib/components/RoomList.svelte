@@ -44,7 +44,7 @@
 	});
 </script>
 
-<div class="flex flex-col h-screen w-1/2 items-center justify-start gap-4 pt-4">
+<div class="flex flex-col h-full w-1/2 items-center justify-start gap-4 pt-4">
 	{#if query.isLoading}
 		<span class="loading loading-spinner loading-lg text-secondary"></span>
 	{:else if query?.data}
