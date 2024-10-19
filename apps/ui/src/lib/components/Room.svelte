@@ -78,22 +78,34 @@
 	});
 </script>
 
-<div>
-	<button
-		onclick={() => {
-			if (ws) {
-				sendLeave({ ws, room: getCurrentRoom(), username: name });
-			}
-			setGameStart(false);
-			setCurrentRoom('');
-			changeView('list' as View);
-		}}>Leave</button
-	>
-	<h1>Room: {getCurrentRoom()}</h1>
-	<h2>
-		Score: {query?.data?.users[0].name}: {query?.data?.users[0].score ?? 0} - {query?.data?.users[1]
-			.name}: {query?.data?.users[1].score ?? 1}
-	</h2>
+<div class="flex flex-col w-full h-screen items-center justify-start gap-4 pt-4">
+	<div class="flex flex-row w-9/12 md:w-1/3 items-center justify-between gap-4">
+		{#if query?.data?.users?.[1] && query?.data?.users[1]?.name?.length > 0}
+			<div class="shadow-black">
+				<div class="flex flex-col items-start justify-center">
+					<h2>
+						{query?.data?.users[0].score ?? 0} - {query?.data?.users[1].score ?? 1}
+					</h2>
+					<h2>
+						{query?.data?.users[0].name} vs. {query?.data?.users[1].name}
+					</h2>
+				</div>
+			</div>
+		{:else}
+			<p>Waiting for another player...</p>
+		{/if}
+		<button
+			class="btn btn-accent btn-xs"
+			onclick={() => {
+				if (ws) {
+					sendLeave({ ws, room: getCurrentRoom(), username: name });
+				}
+				setGameStart(false);
+				setCurrentRoom('');
+				changeView('list' as View);
+			}}>Leave</button
+		>
+	</div>
 	<Grid {letters} {attempts} {answer} />
 	{#if alert}
 		<div
