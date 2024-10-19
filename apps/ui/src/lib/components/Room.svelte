@@ -14,6 +14,7 @@
 	import type { View } from '$lib/types';
 	import { getRoomData } from '$lib/queries.svelte';
 	import { getGameStart } from '$lib/game.svelte';
+	import wordList from '$lib/wordList';
 
 	type RoomProps = {
 		name: string;
@@ -42,6 +43,10 @@
 
 	function submitAnswer() {
 		if (currentAttempt.length < 5) {
+			return;
+		}
+		if (!wordList.includes(currentAttempt)) {
+			console.log('word not in word list!');
 			return;
 		}
 		if (ws !== null) {
