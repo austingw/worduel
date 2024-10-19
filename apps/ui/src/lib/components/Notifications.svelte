@@ -27,7 +27,7 @@
 	</div>
 {/if}
 
-<div class="flex flex-col bg-base-200 items-center justify-center w-11/12 sm:w-2/5">
+<div class="flex flex-col bg-base-200 items-center justify-center w-11/12 sm:w-fit">
 	<div class="collapse collapse-plus">
 		<input type="checkbox" />
 		<div class="collapse-title text-xl font-medium">View Notifications</div>
