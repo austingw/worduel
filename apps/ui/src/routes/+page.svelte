@@ -24,7 +24,7 @@
 	});
 </script>
 
-<div class="w-full h-full flex flex-col items-center justify-start gap-8 pt-12">
+<div class="w-full max-w-screen h-screen flex flex-col items-center justify-start pt-12">
 	<article class="prose text-center">
 		<h1 class="underline">Worduel</h1>
 	</article>

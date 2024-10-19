@@ -20,7 +20,7 @@
 	}
 </script>
 
-<div class="flex flex-col h-full w-9/12 items-center justify-start gap-4">
+<div class="flex flex-col h-screen w-9/12 items-center justify-start gap-4">
 	<p>Welcome! Please enter a name to get started:</p>
 	<div class="flex flex-row items-center justify-center gap-4">
 		<input
