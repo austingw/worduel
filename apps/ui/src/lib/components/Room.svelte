@@ -13,7 +13,7 @@
 	} from '$lib/websocket.svelte';
 	import type { View } from '$lib/types';
 	import { getRoomData } from '$lib/queries.svelte';
-	import { getGameStart } from '$lib/game.svelte';
+	import { getGameStart, setGameStart } from '$lib/game.svelte';
 	import wordList from '$lib/wordList';
 
 	type RoomProps = {
@@ -84,12 +84,16 @@
 			if (ws) {
 				sendLeave({ ws, room: getCurrentRoom(), username: name });
 			}
+			setGameStart(false);
 			setCurrentRoom('');
 			changeView('list' as View);
 		}}>Leave</button
 	>
 	<h1>Room: {getCurrentRoom()}</h1>
-	<h2>Scores: {query?.data?.users[0].score ?? 0} - {query?.data?.users[1].score ?? 1}</h2>
+	<h2>
+		Score: {query?.data?.users[0].name}: {query?.data?.users[0].score ?? 0} - {query?.data?.users[1]
+			.name}: {query?.data?.users[1].score ?? 1}
+	</h2>
 	<Grid {letters} {attempts} {answer} />
 	{#if alert}
 		<div
