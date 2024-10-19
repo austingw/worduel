@@ -24,7 +24,7 @@
 	}
 </script>
 
-<div class="flex flex-col items-center justify-center w-full h-full gap-2">
+<div class="flex flex-col items-center justify-start w-full h-fit gap-2">
 	{#each attempts as attempt}
 		<div class="flex flex-row items-center justify-center gap-2">
 			{#each attempt as letter, index}
