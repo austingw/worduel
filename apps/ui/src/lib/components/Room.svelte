@@ -26,6 +26,7 @@
 	let letters = $state<string[]>([]);
 	let currentAttempt = $derived<string>(letters.join(''));
 	let attempts = $state<string[]>([]);
+	let alert = $state<string>('');
 	const query = getRoomData(getCurrentRoom());
 	const answer = $derived<string>(query?.data?.currentWord || '');
 
@@ -43,10 +44,17 @@
 
 	function submitAnswer() {
 		if (currentAttempt.length < 5) {
+			alert = 'Word must be 5 letters long';
+			setTimeout(() => {
+				alert = '';
+			}, 3000);
 			return;
 		}
 		if (!wordList.includes(currentAttempt)) {
-			console.log('word not in word list!');
+			alert = 'Word not in list';
+			setTimeout(() => {
+				alert = '';
+			}, 3000);
 			return;
 		}
 		if (ws !== null) {
@@ -83,6 +91,14 @@
 	<h1>Room: {getCurrentRoom()}</h1>
 	<h2>Scores: {query?.data?.users[0].score ?? 0} - {query?.data?.users[1].score ?? 1}</h2>
 	<Grid {letters} {attempts} {answer} />
+	{#if alert}
+		<div
+			role="alert"
+			class="toast toast-top toast-center bg-warning absolute top-8 w-fit h-fit animate-none"
+		>
+			<p>{alert}</p>
+		</div>
+	{/if}
 	<Keyboard {addLetter} {removeLetter} {submitAnswer} />
 	<Notifications />
 </div>
