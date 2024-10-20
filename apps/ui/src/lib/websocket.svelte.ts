@@ -44,8 +44,7 @@ export async function establishWs(): Promise<WebSocket | null> {
 	const newWs = new WebSocket(`${protocol}${parsedUrl}/ws`);
 
 	return new Promise((resolve, reject) => {
-		newWs.addEventListener('open', (event) => {
-			console.log('[websocket] connection open', event);
+		newWs.addEventListener('open', () => {
 			resolve(newWs);
 		});
 
@@ -55,13 +54,11 @@ export async function establishWs(): Promise<WebSocket | null> {
 		});
 
 		newWs.addEventListener('error', (error) => {
-			console.error('[websocket] connection error', error);
 			reject(error);
 		});
 
 		newWs.addEventListener('message', (message: MessageEvent) => {
 			const data: { type: string; message: string } = JSON.parse(message.data);
-			console.log(data);
 
 			if (data.message === '' || data.message === undefined) {
 				return;
