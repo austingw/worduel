@@ -28,7 +28,7 @@ func (app *application) websocketHandler(w http.ResponseWriter, r *http.Request)
 
 	// Set the context as needed. Use of r.Context() is not recommended
 	// to avoid surprising behavior (see http.Hijacker).
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Minute)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Minute)
 	defer cancel()
 
 	for {

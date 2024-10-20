@@ -52,7 +52,7 @@ func (app *application) checkAnswer(attempt Message, conn *websocket.Conn) error
 			}(user, i)
 		}
 		wg.Wait()
-		time.AfterFunc(3*time.Second, func() {
+		time.AfterFunc(5*time.Second, func() {
 			app.writeJSONToRoom(room.Name, envelope{"type": "start", "message": "Next round will begin shortly..."})
 			room.CurrentWord = words.NewWord()
 		})
