@@ -19,7 +19,7 @@ type Message struct {
 
 func (app *application) websocketHandler(w http.ResponseWriter, r *http.Request) {
 	c, err := websocket.Accept(w, r, &websocket.AcceptOptions{
-		OriginPatterns: []string{"localhost:5173"},
+		OriginPatterns: []string{"localhost:5173", "worduel-dusky.vercel.app"},
 	})
 	if err != nil {
 		app.logger.Error(err.Error())
