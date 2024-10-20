@@ -21,7 +21,7 @@
 {#if getShowStart()}
 	<div
 		role="alert"
-		class="toast toast-top toast-center bg-primary absolute top-8 w-fit h-fit animate-bounce"
+		class="toast toast-top toast-center bg-primary absolute top-8 w-fit h-fit animate-none"
 	>
 		<p>{getStartMsg()}</p>
 	</div>
