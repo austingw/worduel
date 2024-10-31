@@ -10,3 +10,8 @@ export type Room = {
 	users: User[];
 	currentWord: string;
 };
+
+export type ParsedAttempt = {
+	val: string;
+	class: string;
+};
