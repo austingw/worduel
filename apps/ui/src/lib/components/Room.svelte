@@ -11,7 +11,7 @@
 		sendAnswer,
 		sendLeave
 	} from '$lib/websocket.svelte';
-	import type { View } from '$lib/types';
+	import type { View, ParsedAttempt } from '$lib/types';
 	import { getRoomData } from '$lib/queries.svelte';
 	import { getGameStart, setGameStart } from '$lib/game.svelte';
 	import wordList from '$lib/wordList';
@@ -26,6 +26,44 @@
 	let letters = $state<string[]>([]);
 	let currentAttempt = $derived<string>(letters.join(''));
 	let attempts = $state<string[]>([]);
+
+	let parsedAttempts = $derived.by<ParsedAttempt[][]>(() => {
+		const answerMap = new Map<string, number>();
+		const parsedAttempts: ParsedAttempt[][] = [];
+
+		for (let i = 0; i < answer.length; i++) {
+			answerMap.set(answer[i], (answerMap.get(answer[i]) || 0) + 1);
+		}
+
+		for (let attempt of attempts) {
+			const clonedAnswerMap = new Map(answerMap);
+			const parsedAttempt: ParsedAttempt[] = [];
+
+			for (let i = 0; i < attempt.length; i++) {
+				parsedAttempt.push({ val: attempt[i], class: 'badge-neutral' });
+			}
+
+			for (let i = 0; i < attempt.length; i++) {
+				let count = clonedAnswerMap.get(attempt[i]) || 0;
+				if (answer[i] == attempt[i]) {
+					parsedAttempt[i].class = 'badge-success';
+					clonedAnswerMap.set(attempt[i], count - 1);
+				}
+			}
+
+			for (let i = 0; i < attempt.length; i++) {
+				let count = clonedAnswerMap.get(attempt[i]) || 0;
+				if (answer.includes(attempt[i]) && count > 0) {
+					parsedAttempt[i].class = 'badge-warning';
+					clonedAnswerMap.set(attempt[i], count - 1);
+				}
+			}
+			parsedAttempts.push(parsedAttempt);
+		}
+
+		return parsedAttempts;
+	});
+
 	let alert = $state<string>('');
 	const query = getRoomData(getCurrentRoom());
 	const answer = $derived<string>(query?.data?.currentWord || '');
@@ -107,7 +145,7 @@
 				}}>Leave</button
 			>
 		</div>
-		<Grid {letters} {attempts} {answer} />
+		<Grid {letters} {parsedAttempts} />
 		{#if alert}
 			<div
 				role="alert"

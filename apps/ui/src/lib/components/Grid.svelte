@@ -1,59 +1,17 @@
 <script lang="ts">
+	import type { ParsedAttempt } from '$lib/types';
+
 	type GridProps = {
 		letters: string[];
-		attempts: string[];
-		answer: string;
+		parsedAttempts: ParsedAttempt[][];
 	};
 
-	type parsedAttempt = {
-		val: string;
-		class: string;
-	};
-
-	let { letters, attempts, answer }: GridProps = $props();
+	let { letters, parsedAttempts }: GridProps = $props();
 	let blanks = $derived.by<string[]>(() => {
 		if (letters.length < 5) {
 			return Array(5 - letters.length).fill('');
 		}
 		return [];
-	});
-
-	let parsedAttempts = $derived.by<parsedAttempt[][]>(() => {
-		console.log('letters', answer);
-		const answerMap = new Map<string, number>();
-		const parsedAttempts: parsedAttempt[][] = [];
-
-		for (let i = 0; i < answer.length; i++) {
-			answerMap.set(answer[i], (answerMap.get(answer[i]) || 0) + 1);
-		}
-
-		for (let attempt of attempts) {
-			const clonedAnswerMap = new Map(answerMap);
-			const parsedAttempt: parsedAttempt[] = [];
-
-			for (let i = 0; i < attempt.length; i++) {
-				parsedAttempt.push({ val: attempt[i], class: 'badge-neutral' });
-			}
-
-			for (let i = 0; i < attempt.length; i++) {
-				let count = clonedAnswerMap.get(attempt[i]) || 0;
-				if (answer[i] == attempt[i]) {
-					parsedAttempt[i].class = 'badge-success';
-					clonedAnswerMap.set(attempt[i], count - 1);
-				}
-			}
-
-			for (let i = 0; i < attempt.length; i++) {
-				let count = clonedAnswerMap.get(attempt[i]) || 0;
-				if (answer.includes(attempt[i]) && count > 0) {
-					parsedAttempt[i].class = 'badge-warning';
-					clonedAnswerMap.set(attempt[i], count - 1);
-				}
-			}
-			parsedAttempts.push(parsedAttempt);
-		}
-
-		return parsedAttempts;
 	});
 </script>
 
