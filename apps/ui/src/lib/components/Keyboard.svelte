@@ -1,13 +1,26 @@
 <script lang="ts">
 	import { getGameStart } from '$lib/game.svelte';
+	import type { ParsedAttempt } from '$lib/types';
 
 	type KeyboardProps = {
 		addLetter: (letter: string) => void;
 		removeLetter: () => void;
 		submitAnswer: () => void;
+		parsedAttempts: ParsedAttempt[][];
 	};
 
-	let { addLetter, removeLetter, submitAnswer }: KeyboardProps = $props();
+	let { addLetter, removeLetter, submitAnswer, parsedAttempts }: KeyboardProps = $props();
+
+	let incorrectLetters = $derived.by<string[]>(() => {
+		const incorrectLetters = parsedAttempts.flat();
+		const letterSet = new Set(incorrectLetters.map((letter) => letter.val));
+		for (let letter of incorrectLetters) {
+			if (letter.class === 'badge-success' || letter.class === 'badge-warning') {
+				letterSet.delete(letter.val);
+			}
+		}
+		return [...letterSet];
+	});
 </script>
 
 <div class="w-full flex flex-col justify-end items-center gap-1">
@@ -15,7 +28,7 @@
 		<div class="flex flex-row justify-center items-center gap-1">
 			{#each row as letter}
 				<button
-					class="btn btn-circle btn-neutral btn-sm sm:btn-md"
+					class={`btn btn-circle ${!incorrectLetters.includes(letter) && 'btn-neutral'} btn-sm sm:btn-md`}
 					disabled={!getGameStart()}
 					onclick={() => addLetter(letter)}>{letter}</button
 				>
@@ -31,7 +44,7 @@
 		>
 		{#each 'zxcvbnm' as letter}
 			<button
-				class="btn btn-circle btn-neutral btn-sm sm:btn-md"
+				class={`btn btn-circle ${!incorrectLetters.includes(letter) && 'btn-neutral'} btn-sm sm:btn-md`}
 				disabled={!getGameStart()}
 				onclick={() => addLetter(letter)}>{letter}</button
 			>

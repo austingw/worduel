@@ -154,7 +154,7 @@
 				<p>{alert}</p>
 			</div>
 		{/if}
-		<Keyboard {addLetter} {removeLetter} {submitAnswer} />
+		<Keyboard {addLetter} {removeLetter} {submitAnswer} {parsedAttempts} />
 	</div>
 	<Notifications />
 </div>
