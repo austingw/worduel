@@ -116,7 +116,7 @@
 	});
 </script>
 
-<div class="flex flex-col w-full h-full items-center justify-between gap-4 pt-4">
+<div class="flex flex-col w-full h-full items-center justify-between gap-8 pt-4">
 	<div class="flex flex-col w-full h-full items-center justify-start gap-12 pt-8">
 		<div class="flex flex-row w-9/12 md:w-1/3 items-center justify-between gap-4">
 			{#if query?.data?.users?.[1] && query?.data?.users[1]?.name?.length > 0}
