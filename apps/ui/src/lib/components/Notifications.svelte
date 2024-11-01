@@ -13,7 +13,10 @@
 </script>
 
 {#if getShowNotification()}
-	<div role="alert" class="alert bg-secondary absolute bottom-4 right-4 w-fit h-fit animate-bounce">
+	<div
+		role="alert"
+		class="alert bg-secondary absolute bottom-4 right-4 w-fit h-fit animate-bounce z-50"
+	>
 		<p>{msgs[0]}</p>
 	</div>
 {/if}
@@ -21,7 +24,7 @@
 {#if getShowStart()}
 	<div
 		role="alert"
-		class="toast toast-top toast-center bg-primary absolute top-8 w-fit h-fit animate-none"
+		class="toast toast-top toast-center bg-primary absolute top-8 w-fit h-fit animate-none z-50"
 	>
 		<p>{getStartMsg()}</p>
 	</div>
@@ -30,7 +33,7 @@
 <div class="flex flex-col bg-base-200 items-center justify-center w-11/12 sm:w-fit mb-8">
 	<div class="collapse collapse-plus">
 		<input type="checkbox" />
-		<div class="collapse-title text-xl font-medium">View Notifications</div>
+		<div class="collapse-title text-xl font-medium">Room History</div>
 		<div class="collapse-content">
 			{#each msgs as msg}
 				<div class="divider"></div>
