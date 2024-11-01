@@ -15,7 +15,7 @@
 </script>
 
 <QueryClientProvider client={queryClient}>
-	<div class="w-screen h-screen flex flex-col items-center justify-center">
+	<div class="w-screen h-full flex flex-col items-center justify-center">
 		{@render children()}
 	</div>
 </QueryClientProvider>
