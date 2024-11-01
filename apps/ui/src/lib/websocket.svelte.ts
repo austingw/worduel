@@ -3,7 +3,7 @@ import { setGameStart } from './game.svelte';
 
 let ws = $state<WebSocket | null>(null);
 
-let wsMessages = $state<string[]>(['test']);
+let wsMessages = $state<string[]>([]);
 let startMsg = $state<string>('');
 let showStart = $state<boolean>(false);
 let showNotification = $state(false);
